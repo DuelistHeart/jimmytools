@@ -7,6 +7,7 @@ import com.duelco.handlers.TransformationHelperHandler;
 import com.duelco.listeners.BingoListener;
 import com.duelco.managers.DataManager;
 import com.duelco.ui.screen.ScreenHandler;
+import io.wispforest.owo.ui.core.Color;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -32,6 +33,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -168,15 +170,16 @@ public class JimmyToolsClient implements ClientModInitializer {
 
 		Collection<PlayerListEntry> players = client.getNetworkHandler().getPlayerList();
 
+		int padding = 5;
 		int x = client.getWindow().getScaledWidth() / 2 - tabWidth / 2;
 		int y = (client.getWindow().getScaledHeight() / 2 - tabHeight / 2) - 5;
 		int index = 0;
-		int lineHeight = 20;
+		int lineHeight = 10;
 
 		// Execute code if the TAB key is currently being pressed
 		if (client.options.playerListKey.isPressed()) {
 			// Render a background for the custom tab list
-			context.fillGradient(x, y, x + tabWidth, y + tabHeight, 0x80000000, 0x80000000);
+			context.fillGradient(x, y, x + tabWidth, y + tabHeight, 0xFFFFEBB5, 0xFFFFBD90);
 
 			List<PlayerListEntry> nearbyPlayerEntries = players.stream().toList().stream().filter(entry -> {
 						if (entry.getDisplayName() != null) {
@@ -197,10 +200,10 @@ public class JimmyToolsClient implements ClientModInitializer {
 				Identifier skinTexture = ((AbstractClientPlayerEntity) player).getSkinTextures().texture();
 
 				// Draw the player's head (size: 16x16 pixels)
-				PlayerSkinDrawer.draw(context, skinTexture, x, y + (index * lineHeight) + 4, 16, entry.shouldShowHat(), false, -1);
+				PlayerSkinDrawer.draw(context, skinTexture, x + padding, y + (index * lineHeight) + 4, 8, entry.shouldShowHat(), false, -1);
 
 				// Draw the player's name next to their head
-				context.drawText(client.textRenderer, entry.getDisplayName().getSiblings().get(1).getString(), x + 24, y + (index * lineHeight) + 4, 0xFFFFFF, false);
+				context.drawText(client.textRenderer, entry.getDisplayName().getSiblings().get(1).getString(), x + padding + 12, y + (index * lineHeight) + 4, Colors.BLACK, false);
 
 				index++;
 			}

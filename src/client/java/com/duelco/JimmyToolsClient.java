@@ -7,42 +7,30 @@ import com.duelco.handlers.TransformationHelperHandler;
 import com.duelco.listeners.BingoListener;
 import com.duelco.managers.DataManager;
 import com.duelco.ui.screen.ScreenHandler;
-import io.wispforest.owo.ui.core.Color;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
-import net.minecraft.client.gui.hud.PlayerListHud;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.resource.ResourceType;
-import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class JimmyToolsClient implements ClientModInitializer {
@@ -207,22 +195,6 @@ public class JimmyToolsClient implements ClientModInitializer {
 
 				index++;
 			}
-//			for (PlayerListEntry entry : players) {
-////				if (!Objects.equals(playerName, "")) {
-//				if (entry.getDisplayName() != null && entry.getDisplayName().getSiblings().size() == 2) {
-//
-//					// Get the player's skin texture
-//					Identifier skinTexture = entry.getSkinTextures().texture();
-//
-//					// Draw the player's head (size: 16x16 pixels)
-//					PlayerSkinDrawer.draw(context, skinTexture, x, y + (index * lineHeight) + 4, 16, entry.shouldShowHat(), false, -1);
-//
-//					// Draw the player's name next to their head
-//					context.drawText(client.textRenderer, entry.getDisplayName().getSiblings().get(1).getString(), x + 24, y + (index * lineHeight) + 4, 0xFFFFFF, false);
-//
-//					index++;
-//				}
-//			}
 		}
 	}
 

@@ -42,8 +42,8 @@ public class JimmyToolsClient implements ClientModInitializer {
 	private static KeyBinding bagThreeKeybind;
 	private static KeyBinding bagFourKeybind;
 
-	private static int windowWidth = 300;
-	private static int windowHeight = 450;
+	private static int animatedHeight = 0;
+	private static final float ANIMATION_SPEED = 5.0f; // Adjust this for faster/slower animation
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("jimmytools-client");
 
@@ -164,29 +164,38 @@ public class JimmyToolsClient implements ClientModInitializer {
 		int index = 0;
 		int lineHeight = 10;
 
-		// Execute code if the TAB key is currently being pressed
 		if (client.options.playerListKey.isPressed()) {
-			// Render a background for the custom tab list
-			context.fillGradient(x, y, x + tabWidth, y + tabHeight, 0xFFFFEBB5, 0xFFFFBD90);
+			// Animate height increase (expands downwards)
+			animatedHeight += ANIMATION_SPEED;
+			animatedHeight = Math.min(animatedHeight, tabHeight); // Clamp to max height
+		} else {
+			// Animate height decrease (collapses smoothly)
+			animatedHeight -= 8.0f;
+			animatedHeight = Math.max(animatedHeight, 0); // Ensure it doesn't go negative
+		}
 
-			List<PlayerListEntry> nearbyPlayerEntries = players.stream().toList().stream().filter(entry -> {
-						if (entry.getDisplayName() != null) {
-							return entry.getDisplayName().getSiblings().size() == 2;
-						} else {
-							return false;
-						}
-					}).toList();
+		// Render a background for the custom tab list
+		context.fillGradient(x, y, x + tabWidth, y + animatedHeight, 0xFFFFEBB5, 0xFFFFBD90);
 
-			List<PlayerEntity> nearbyPlayers = getNearbyPlayers(client.player, nearbyPlayerEntries.size());
+		List<PlayerListEntry> nearbyPlayerEntries = players.stream().toList().stream().filter(entry -> {
+					if (entry.getDisplayName() != null) {
+						return entry.getDisplayName().getSiblings().size() == 2;
+					} else {
+						return false;
+					}
+				}).toList();
 
-			// Loop through the player list and draw custom tab names
-			for (int i = 0; i < nearbyPlayers.size(); i++) {
-				PlayerListEntry entry = nearbyPlayerEntries.get(i);
-				PlayerEntity player = nearbyPlayers.get(i);
+		List<PlayerEntity> nearbyPlayers = getNearbyPlayers(client.player, nearbyPlayerEntries.size());
 
-				// Get the player's skin texture
-				Identifier skinTexture = ((AbstractClientPlayerEntity) player).getSkinTextures().texture();
+		// Loop through the player list and draw custom tab names
+		for (int i = 0; i < nearbyPlayers.size(); i++) {
+			PlayerListEntry entry = nearbyPlayerEntries.get(i);
+			PlayerEntity player = nearbyPlayers.get(i);
 
+			// Get the player's skin texture
+			Identifier skinTexture = ((AbstractClientPlayerEntity) player).getSkinTextures().texture();
+
+			if (animatedHeight > y + (index * lineHeight) + 4) {
 				// Draw the player's head (size: 16x16 pixels)
 				PlayerSkinDrawer.draw(context, skinTexture, x + padding, y + (index * lineHeight) + 4, 8, entry.shouldShowHat(), false, -1);
 

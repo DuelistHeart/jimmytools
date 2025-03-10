@@ -3,9 +3,12 @@ package com.duelco;
 import com.duelco._enum.Screen;
 import com.duelco.config.ModConfig;
 import com.duelco.handlers.BagHandler;
+import com.duelco.handlers.CharacterMappingHandler;
 import com.duelco.handlers.TransformationHelperHandler;
 import com.duelco.listeners.BingoListener;
+import com.duelco.managers.CharacterMapperManager;
 import com.duelco.managers.DataManager;
+import com.duelco.obj.general.Player;
 import com.duelco.ui.screen.ScreenHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -156,7 +159,7 @@ public class JimmyToolsClient implements ClientModInitializer {
 			return;
 		}
 
-		Collection<PlayerListEntry> players = client.getNetworkHandler().getPlayerList();
+		CharacterMappingHandler.mapNearbyPlayers();
 
 		int padding = 5;
 		int x = client.getWindow().getScaledWidth() / 2 - tabWidth / 2;
@@ -177,30 +180,18 @@ public class JimmyToolsClient implements ClientModInitializer {
 		// Render a background for the custom tab list
 		context.fillGradient(x, y, x + tabWidth, y + animatedHeight, 0xFFFFEBB5, 0xFFFFBD90);
 
-		List<PlayerListEntry> nearbyPlayerEntries = players.stream().toList().stream().filter(entry -> {
-					if (entry.getDisplayName() != null) {
-						return entry.getDisplayName().getSiblings().size() == 2;
-					} else {
-						return false;
-					}
-				}).toList();
-
-		List<PlayerEntity> nearbyPlayers = getNearbyPlayers(client.player, nearbyPlayerEntries.size());
+		List<Player> players = CharacterMapperManager.getPlayers();
 
 		// Loop through the player list and draw custom tab names
-		for (int i = 0; i < nearbyPlayers.size(); i++) {
-			PlayerListEntry entry = nearbyPlayerEntries.get(i);
-			PlayerEntity player = nearbyPlayers.get(i);
-
-			// Get the player's skin texture
-			Identifier skinTexture = ((AbstractClientPlayerEntity) player).getSkinTextures().texture();
+		for (int i = 0; i < players.size(); i++) {
 
 			if (animatedHeight > y + (index * lineHeight) + 4) {
 				// Draw the player's head (size: 16x16 pixels)
-				PlayerSkinDrawer.draw(context, skinTexture, x + padding, y + (index * lineHeight) + 4, 8, entry.shouldShowHat(), false, -1);
+				// TODO: Fix the head rendering for hats
+				PlayerSkinDrawer.draw(context, players.get(i).getSkinTexture(), x + padding, y + (index * lineHeight) + 4, 8, true, false, -1);
 
 				// Draw the player's name next to their head
-				context.drawText(client.textRenderer, entry.getDisplayName().getSiblings().get(1).getString(), x + padding + 12, y + (index * lineHeight) + 4, Colors.BLACK, false);
+				context.drawText(client.textRenderer, players.get(i).getCharacterName(), x + padding + 12, y + (index * lineHeight) + 4, Colors.BLACK, false);
 
 				index++;
 			}

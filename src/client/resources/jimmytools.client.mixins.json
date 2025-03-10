@@ -5,6 +5,7 @@
   "client": [
     "ChatMixin",
     "MainMixin",
+    "PlayerListHudMixin",
     "ServerJoinMixin"
   ],
   "injectors": {

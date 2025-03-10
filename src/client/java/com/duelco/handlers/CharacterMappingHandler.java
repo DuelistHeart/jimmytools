@@ -54,8 +54,9 @@ public class CharacterMappingHandler {
         }
 
         return player.getWorld().getPlayers().stream()
-                .sorted(Comparator.comparing((PlayerEntity p) -> p.getName().getString()))
+                .sorted(Comparator.comparing((PlayerEntity p) -> p.squaredDistanceTo(player)))
                 .limit(count)
+                .sorted(Comparator.comparing((PlayerEntity p) -> p.getName().getString()))
                 .collect(Collectors.toList());
     }
 }

@@ -1,0 +1,33 @@
+package com.duelco.ui.hud.tab;
+
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.PlayerSkinDrawer;
+import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.util.Colors;
+
+import java.util.List;
+
+public class PlayerTabList extends TabListRenderer<PlayerListEntry> {
+    public PlayerTabList(String id, List<PlayerListEntry> data) {
+        super(id, data);
+    }
+
+    public PlayerTabList(String id) {
+        super(id);
+    }
+
+    void setPosition() {
+        this.x = (client.getWindow().getScaledWidth() / 2 - tabWidth / 2) - 75;
+        this.y = (client.getWindow().getScaledHeight() / 2 - tabHeight / 2) - 5;
+    }
+
+    @Override
+    void executeLoop(PlayerListEntry datum, DrawContext context, int i) {
+        if (y + animatedHeight > y + ((i % 15) * lineHeight) + 4) {
+            PlayerSkinDrawer.draw(context, datum.getSkinTextures().texture(), x + padding + (100 * (i / 15)), y + ((i % 15) * lineHeight) + 4, 8, true, false, -1);
+
+            // Draw the player's name next to their head
+            context.drawText(client.textRenderer, datum.getDisplayName().getString(), x + padding + 12 + (100 * (i / 15)), y + ((i % 15) * lineHeight) + 4, Colors.BLACK, false);
+        }
+    }
+}

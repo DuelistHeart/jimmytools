@@ -9,6 +9,8 @@ import com.duelco.listeners.BingoListener;
 import com.duelco.managers.CharacterMapperManager;
 import com.duelco.managers.DataManager;
 import com.duelco.obj.general.Player;
+import com.duelco.ui.hud.tab.CharacterTabList;
+import com.duelco.ui.hud.tab.PlayerTabList;
 import com.duelco.ui.screen.ScreenHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -44,9 +46,8 @@ public class JimmyToolsClient implements ClientModInitializer {
 	private static KeyBinding bagTwoKeybind;
 	private static KeyBinding bagThreeKeybind;
 	private static KeyBinding bagFourKeybind;
-
-	private static int animatedHeight = 0;
-	private static final float ANIMATION_SPEED = 5.0f; // Adjust this for faster/slower animation
+	private static PlayerTabList playerTabList;
+	private static CharacterTabList characterTabList;
 
 	private static List<PlayerListEntry> playerListEntries = new ArrayList<>();
 
@@ -59,8 +60,8 @@ public class JimmyToolsClient implements ClientModInitializer {
 		DataManager.loadData();
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new BingoListener());
 
-		// Register event to render our custom tab list
-		HudRenderCallback.EVENT.register(this::onRender);
+		playerTabList = new PlayerTabList("player_tab_list");
+		characterTabList = new CharacterTabList("character_tab_list");
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (transformationToggleKeybind.wasPressed()) {
@@ -101,7 +102,13 @@ public class JimmyToolsClient implements ClientModInitializer {
                     return entry.getDisplayName() != null && !entry.getDisplayName().getString().isEmpty();
 				}).toList();
 			}
+			playerTabList.setData(playerListEntries);
+			characterTabList.setData(CharacterMapperManager.getPlayers());
 		});
+
+		// Register event to render our custom tab list
+		HudRenderCallback.EVENT.register((drawContext, renderTickCounter) -> playerTabList.render(drawContext));
+		HudRenderCallback.EVENT.register((drawContext, renderTickCounter) -> characterTabList.render(drawContext));
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
 			ModConfig.HANDLER.save();
@@ -157,115 +164,5 @@ public class JimmyToolsClient implements ClientModInitializer {
 				GLFW.GLFW_KEY_LEFT,
 				"keybinds.category.jimmytools"
 		));
-	}
-
-	// Render Custom Tab List (HUD)
-	private void onRender(DrawContext context, RenderTickCounter tickDelta) {
-		MinecraftClient client = MinecraftClient.getInstance();
-		int tabWidth = 200;
-		int tabHeight = 150;
-		int rightTabPadding = -200;
-
-		if (client == null || client.player == null || client.getNetworkHandler() == null) {
-			return;
-		}
-
-		CharacterMappingHandler.mapNearbyPlayers();
-
-		int padding = 5;
-		int x = client.getWindow().getScaledWidth() / 2 - tabWidth / 2;
-		int y = (client.getWindow().getScaledHeight() / 2 - tabHeight / 2) - 5;
-		int index = 0;
-		int lineHeight = 10;
-
-		if (client.options.playerListKey.isPressed()) {
-			// Animate height increase (expands downwards)
-			animatedHeight += ANIMATION_SPEED;
-			animatedHeight = Math.min(animatedHeight, tabHeight); // Clamp to max height
-		} else {
-			// Animate height decrease (collapses smoothly)
-			animatedHeight -= 8.0f;
-			animatedHeight = Math.max(animatedHeight, 0); // Ensure it doesn't go negative
-		}
-
-		// Render a background for the custom tab list
-		context.fillGradient(x + rightTabPadding, y, x + tabWidth + rightTabPadding, y + animatedHeight, 0xFFFFEBB5, 0xFFFFBD90);
-
-		// Loop through the player list and draw custom tab names with iterator
-		for (int i = 0; i < playerListEntries.size(); i++) {
-			PlayerListEntry player = playerListEntries.get(i);
-            if (y + animatedHeight > y + ((i % 15) * lineHeight) + 4) {
-				if (player.getDisplayName() != null && !player.getDisplayName().getString().isEmpty()) {
-					// Draw the player's head (size: 16x16 pixels)
-					// TODO: Fix the head rendering for hats
-					PlayerSkinDrawer.draw(context, player.getSkinTextures().texture(), x + padding + rightTabPadding + (100 * (i / 15)), y + ((i % 15) * lineHeight) + 4, 8, true, false, -1);
-
-					// Draw the player's name next to their head
-					context.drawText(client.textRenderer, player.getDisplayName().getString(), x + padding + 12 + rightTabPadding + (100 * (i / 15)), y + ((i % 15) * lineHeight) + 4, Colors.BLACK, false);
-					System.out.println(player.getDisplayName().getString());
-					index++;
-				}
-            }
-        }
-//		MinecraftClient client = MinecraftClient.getInstance();
-//		int tabWidth = 100;
-//		int tabHeight = 150;
-//		int rightTabPadding = 100;
-//
-//		if (client == null || client.player == null || client.getNetworkHandler() == null) {
-//			return;
-//		}
-//
-//		CharacterMappingHandler.mapNearbyPlayers();
-//
-//		int padding = 5;
-//		int x = client.getWindow().getScaledWidth() / 2 - tabWidth / 2;
-//		int y = (client.getWindow().getScaledHeight() / 2 - tabHeight / 2) - 5;
-//		int index = 0;
-//		int lineHeight = 10;
-//
-//		if (client.options.playerListKey.isPressed()) {
-//			// Animate height increase (expands downwards)
-//			animatedHeight += ANIMATION_SPEED;
-//			animatedHeight = Math.min(animatedHeight, tabHeight); // Clamp to max height
-//		} else {
-//			// Animate height decrease (collapses smoothly)
-//			animatedHeight -= 8.0f;
-//			animatedHeight = Math.max(animatedHeight, 0); // Ensure it doesn't go negative
-//		}
-//
-//		// Render a background for the custom tab list
-//		context.fillGradient(x + rightTabPadding, y, x + tabWidth + rightTabPadding, y + animatedHeight, 0xFFFFEBB5, 0xFFFFBD90);
-//
-//		List<Player> players = CharacterMapperManager.getPlayers();
-//
-//		// Loop through the player list and draw custom tab names
-//		for (int i = 0; i < players.size(); i++) {
-//
-//			if (animatedHeight > y + (index * lineHeight) + 4) {
-//				// Draw the player's head (size: 16x16 pixels)
-//				// TODO: Fix the head rendering for hats
-//				PlayerSkinDrawer.draw(context, players.get(i).getSkinTexture(), x + padding + rightTabPadding, y + (index * lineHeight) + 4, 8, true, false, -1);
-//
-//				// Draw the player's name next to their head
-//				context.drawText(client.textRenderer, players.get(i).getCharacterName(), x + padding + 12 + rightTabPadding, y + (index * lineHeight) + 4, Colors.BLACK, false);
-//
-//				index++;
-//			}
-//		}
-	}
-
-	public static List<PlayerEntity> getNearbyPlayers(PlayerEntity player, int count) {
-		if (player == null || player.getWorld() == null) {
-			return List.of();
-		}
-
-		Vec3d playerPos = player.getPos(); // Get player's current position
-
-        // Return a list of players sorted by their username to the player
-		return player.getWorld().getPlayers().stream()
-				.sorted(Comparator.comparing((PlayerEntity p) -> p.getName().getString()))
-				.limit(count) // Get the top X closest players (including self)
-				.collect(Collectors.toList());
 	}
 }

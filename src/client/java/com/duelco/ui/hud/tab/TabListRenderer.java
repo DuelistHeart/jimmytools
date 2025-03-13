@@ -60,7 +60,7 @@ public abstract class TabListRenderer<T> {
         }
 
         // Render a background for the custom tab list
-        context.fillGradient(x, y, x + tabWidth, y + animatedHeight, 0xFFFFEBB5, 0xFFFFBD90);
+        context.fillGradient(x, y, x + tabWidth, y + animatedHeight, 0xFFF8DCC2, 0xFFAB9179);
 
         // Loop through the player list and draw custom tab names with iterator
         IntStream.range(0, data.size()).forEach(i -> executeLoop(data.get(i), context, i));

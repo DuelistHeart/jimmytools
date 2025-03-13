@@ -4,6 +4,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.util.Colors;
+import net.minecraft.util.Identifier;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ public class PlayerTabList extends TabListRenderer<PlayerListEntry> {
 
     public PlayerTabList(String id) {
         super(id);
+        this.scrollTexture = Identifier.of("jimmytools", "ui/scroll_online_top.png");
     }
 
     void setPosition() {

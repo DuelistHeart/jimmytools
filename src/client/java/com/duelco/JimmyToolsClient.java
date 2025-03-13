@@ -99,7 +99,9 @@ public class JimmyToolsClient implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.getNetworkHandler() != null) {
 				playerListEntries = client.getNetworkHandler().getPlayerList().stream().filter(entry -> {
-                    return entry.getDisplayName() != null && !entry.getDisplayName().getString().isEmpty();
+                    return entry.getDisplayName() != null && !entry.getDisplayName().getString().isEmpty()
+							&& entry.getDisplayName().getSiblings().size() == 1
+							&& !List.of("Nearby", "Build Server", "Server").contains(entry.getDisplayName().getString());
 				}).toList();
 			}
 			playerTabList.setData(playerListEntries);

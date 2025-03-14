@@ -8,10 +8,7 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CharacterMappingHandler {
@@ -53,10 +50,13 @@ public class CharacterMappingHandler {
             return List.of();
         }
 
+        Set<String> seenNames = new LinkedHashSet<>();
+
         return player.getWorld().getPlayers().stream()
                 .sorted(Comparator.comparing((PlayerEntity p) -> p.squaredDistanceTo(player)))
+                .filter(p -> seenNames.add(p.getName().getString())) // Only add if name is not already in the set
                 .limit(count)
-                .sorted(Comparator.comparing((PlayerEntity p) -> p.getName().getString()))
                 .collect(Collectors.toList());
+
     }
 }

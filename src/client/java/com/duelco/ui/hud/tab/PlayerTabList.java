@@ -29,7 +29,7 @@ public class PlayerTabList extends TabListRenderer<PlayerListEntry> {
             PlayerSkinDrawer.draw(context, datum.getSkinTextures().texture(), x + padding + (100 * (i / 15)), y + ((i % 15) * lineHeight) + 4, 8, true, false, -1);
 
             // Draw the player's name next to their head
-            context.drawText(client.textRenderer, datum.getDisplayName().getString(), x + padding + 12 + (100 * (i / 15)), y + ((i % 15) * lineHeight) + 4, Colors.BLACK, false);
+            context.drawText(client.textRenderer, datum.getDisplayName().getString(), x + padding + 12 + (100 * (i / 15)), y + ((i % 15) * lineHeight) + 4, Colors.WHITE, true);
         }
     }
 }

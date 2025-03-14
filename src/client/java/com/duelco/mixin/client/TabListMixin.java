@@ -1,5 +1,6 @@
 package com.duelco.mixin.client;
 
+import com.duelco.managers.DataManager;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.PlayerListHeaderS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
@@ -22,7 +23,7 @@ public class TabListMixin {
             String header = packet.header().getString();
 
             // Regex pattern
-            Pattern pattern = Pattern.compile("(\\d+ \\(\\d+\\)) \\| tps: ([\\d.]+) \\| ping: (\\d+ms)");
+            Pattern pattern = Pattern.compile("(\\d+ \\(\\d+\\)) \\| tps: ([\\d.]+) \\| ping: (\\d+)ms");
             Matcher matcher = pattern.matcher(header);
 
             if (matcher.find()) {
@@ -30,9 +31,10 @@ public class TabListMixin {
                 String tps = matcher.group(2);            // "20.0"
                 String ping = matcher.group(3);           // "0ms"
 
-                System.out.println("Online Players: " + onlinePlayers);
-                System.out.println("TPS: " + tps);
-                System.out.println("Ping: " + ping);
+                DataManager.getDataStore().getTabData().setPing(Double.parseDouble(ping));
+                DataManager.getDataStore().getTabData().setTps(Double.parseDouble(tps));
+                DataManager.getDataStore().getTabData().setCurrentServerPlayerCount(Integer.parseInt(onlinePlayers.split(" ")[0]));
+                DataManager.getDataStore().getTabData().setTotalPlayerCount(Integer.parseInt(onlinePlayers.split(" ")[1].substring(1, onlinePlayers.split(" ")[1].length() - 1)));
             } else {
                 System.out.println("No match found!");
             }

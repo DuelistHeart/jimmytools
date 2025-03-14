@@ -26,7 +26,7 @@ public class CharacterTabList extends TabListRenderer<Player> {
 
             // 18 char max before trailing off with ".."
             // Draw the player's name next to their head
-            context.drawText(client.textRenderer, datum.getCharacterName(), x + padding + 12 + (100 * (i / 15)), y + ((i % 15) * lineHeight) + 4, Colors.BLACK, false);
+            context.drawText(client.textRenderer, datum.getCharacterName(), x + padding + 12 + (100 * (i / 15)), y + ((i % 15) * lineHeight) + 4, Colors.WHITE, true);
 //            context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, datum.getCharacterName(), x + padding + 12 + (100 * (i / 15)), y + ((i % 15) * lineHeight), Colors.WHITE);
         }
     }

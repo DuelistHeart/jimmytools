@@ -6,13 +6,13 @@
     "ChatMixin",
     "MainMixin",
     "PlayerListHudMixin",
-    "ServerJoinMixin"
+    "ServerJoinMixin",
+    "TabListMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "mixins": [
-    "DistrictIdentifierMixin",
     "TitleMixin"
   ]
 }

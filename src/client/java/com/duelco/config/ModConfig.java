@@ -38,6 +38,12 @@ public class ModConfig {
     @SerialEntry
     public static boolean isBingoCardGenerateSoundEnabled = true;
 
+    @SerialEntry
+    public static boolean isCustomTablistEnabled = false;
+    @SerialEntry
+    public static float openScrollSpeed = 3.0f;
+    @SerialEntry
+    public static float closeScrollSpeed = 8.0f;
 
     @SerialEntry
     public static boolean areTransformationsEnabled = false;
@@ -155,6 +161,36 @@ public class ModConfig {
                                                 .enumClass(NamesCmdOptions.class)
                                                 .formatValue(v -> Text.translatable("jimmytools.config.startupcommands.namesoptions." + v.name().toLowerCase())))
                                         .build())
+                                .build())
+                        .build())
+                .category(ConfigCategory.createBuilder()
+                        .name(Text.literal("CustomTab"))
+                        .tooltip(Text.literal("Custom Tablist config"))
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Tab Options"))
+                                .description(OptionDescription.of(Text.literal("Options for the custom tab list.")))
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Enable Custom Tablist"))
+                                        .description(OptionDescription.of(Text.literal("Enables/Disables the custom tablist.")))
+                                        .binding(false, () -> isCustomTablistEnabled, newVal -> isCustomTablistEnabled = newVal)
+                                        .controller(BooleanControllerBuilder::create)
+                                        .build())
+                                .build())
+                        .option(Option.<Float>createBuilder()
+                                .name(Text.literal("Scroll Open Speed"))
+                                .description(OptionDescription.of(Text.literal("Determines how fast the scrolls open up.")))
+                                .binding(3.0f, () -> openScrollSpeed, newVal -> openScrollSpeed = newVal)
+                                .controller(floatOption -> FloatSliderControllerBuilder.create(floatOption)
+                                        .range(1.0f, 12.0f)
+                                        .step(1.0f))
+                                .build())
+                        .option(Option.<Float>createBuilder()
+                                .name(Text.literal("Scroll Close Speed"))
+                                .description(OptionDescription.of(Text.literal("Determines how fast the scrolls close.")))
+                                .binding(8.0f, () -> closeScrollSpeed, newVal -> closeScrollSpeed = newVal)
+                                .controller(floatOption -> FloatSliderControllerBuilder.create(floatOption)
+                                        .range(1.0f, 12.0f)
+                                        .step(1.0f))
                                 .build())
                         .build())
                 .category(ConfigCategory.createBuilder()

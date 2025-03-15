@@ -1,5 +1,6 @@
 package com.duelco.ui.hud.tab;
 
+import com.duelco.config.ModConfig;
 import com.duelco.handlers.CharacterMappingHandler;
 import com.duelco.managers.DataManager;
 import net.minecraft.client.MinecraftClient;
@@ -44,7 +45,7 @@ public abstract class TabListRenderer<T> {
 
     public void render(DrawContext context) {
         boolean scrollsVisible = animatedHeight > 0;
-        if (client == null || client.player == null || client.getNetworkHandler() == null) {
+        if (!ModConfig.isCustomTablistEnabled || client == null || client.player == null || client.getNetworkHandler() == null) {
             return;
         }
 
@@ -54,11 +55,11 @@ public abstract class TabListRenderer<T> {
             this.setPosition();
 
             // Animate height increase (expands downwards)
-            animatedHeight += (int) ANIMATION_SPEED;
+            animatedHeight += (int) ModConfig.openScrollSpeed;
             animatedHeight = Math.min(animatedHeight, tabHeight); // Clamp to max height
         } else {
             // Animate height decrease (collapses smoothly)
-            animatedHeight -= (int) 8.0f;
+            animatedHeight -= (int) ModConfig.closeScrollSpeed;
             animatedHeight = Math.max(animatedHeight, 0); // Ensure it doesn't go negative
         }
 

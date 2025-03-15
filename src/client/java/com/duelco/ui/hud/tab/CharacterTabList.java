@@ -28,7 +28,7 @@ public class CharacterTabList extends TabListRenderer<Player> {
 
     @Override
     Text getFooterText() {
-        return null;
+        return Text.literal("   " + MinecraftClient.getInstance().getNetworkHandler().getServerInfo().address).styled(style -> style.withColor(Colors.CYAN));
     }
 
     @Override

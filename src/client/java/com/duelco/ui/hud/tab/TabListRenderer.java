@@ -20,8 +20,6 @@ public abstract class TabListRenderer<T> {
     protected final int lineHeight = 10;
     protected final int padding = 5;
 
-    protected Text headerText;
-    protected Text footerText;
     protected int x;
     protected int y;
     protected int tabWidth = 200;

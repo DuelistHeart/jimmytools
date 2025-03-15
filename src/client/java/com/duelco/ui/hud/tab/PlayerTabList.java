@@ -30,19 +30,19 @@ public class PlayerTabList extends TabListRenderer<PlayerListEntry> {
         return Text.literal("Online").styled(style -> style.withColor(Colors.GREEN)).append(Text.literal(" (" +
                 DataManager.getDataStore().getTabData().getCurrentServerPlayerCount() + "/" +
                 DataManager.getDataStore().getTabData().getTotalPlayerCount() + ")").styled(style -> style.withColor(Colors.WHITE)))
-                .append(Text.literal("   Lords of Minecraft 2").styled(style -> style.withColor(Colors.YELLOW)));
+                .append(Text.literal("  TPS: ").styled(style -> style.withColor(Colors.LIGHT_GRAY))
+                        .append(Text.literal(String.valueOf(DataManager.getDataStore().getTabData().getTps()))
+                                .styled(style -> style.withColor(Colors.WHITE)))
+                        .append(Text.literal("  Ping: ").styled(style -> style.withColor(Colors.LIGHT_GRAY))
+                                .append(Text.literal(String.valueOf(DataManager.getDataStore().getTabData().getPing()))
+                                        .styled(style -> style.withColor(Colors.WHITE)))
+                                .append(Text.literal("ms").styled(style -> style.withColor(Colors.WHITE)))
+                        ));
     }
 
     @Override
     Text getFooterText() {
-        return Text.literal("TPS: ").styled(style -> style.withColor(Colors.LIGHT_GRAY))
-                .append(Text.literal(String.valueOf(DataManager.getDataStore().getTabData().getTps()))
-                        .styled(style -> style.withColor(Colors.WHITE)))
-                .append(Text.literal("   Ping: ").styled(style -> style.withColor(Colors.LIGHT_GRAY))
-                        .append(Text.literal(String.valueOf(DataManager.getDataStore().getTabData().getPing()))
-                                .styled(style -> style.withColor(Colors.WHITE)))
-                        .append(Text.literal("ms").styled(style -> style.withColor(Colors.WHITE)))
-                );
+        return Text.literal("           Lords of Minecraft 2").styled(style -> style.withColor(Colors.YELLOW));
     }
 
     @Override

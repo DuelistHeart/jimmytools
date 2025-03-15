@@ -1,8 +1,10 @@
 package com.duelco.ui.hud.tab;
 
+import com.duelco.managers.DataManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
@@ -21,6 +23,26 @@ public class PlayerTabList extends TabListRenderer<PlayerListEntry> {
     void setPosition() {
         this.x = (client.getWindow().getScaledWidth() / 2 - tabWidth / 2) - 75;
         this.y = (client.getWindow().getScaledHeight() / 2 - tabHeight / 2) - 5;
+    }
+
+    @Override
+    Text getHeaderText() {
+        return Text.literal("Online").styled(style -> style.withColor(Colors.GREEN)).append(Text.literal(" (" +
+                DataManager.getDataStore().getTabData().getCurrentServerPlayerCount() + "/" +
+                DataManager.getDataStore().getTabData().getTotalPlayerCount() + ")").styled(style -> style.withColor(Colors.WHITE)))
+                .append(Text.literal("   Lords of Minecraft 2").styled(style -> style.withColor(Colors.YELLOW)));
+    }
+
+    @Override
+    Text getFooterText() {
+        return Text.literal("TPS: ").styled(style -> style.withColor(Colors.LIGHT_GRAY))
+                .append(Text.literal(String.valueOf(DataManager.getDataStore().getTabData().getTps()))
+                        .styled(style -> style.withColor(Colors.WHITE)))
+                .append(Text.literal("   Ping: ").styled(style -> style.withColor(Colors.LIGHT_GRAY))
+                        .append(Text.literal(String.valueOf(DataManager.getDataStore().getTabData().getPing()))
+                                .styled(style -> style.withColor(Colors.WHITE)))
+                        .append(Text.literal("ms").styled(style -> style.withColor(Colors.WHITE)))
+                );
     }
 
     @Override

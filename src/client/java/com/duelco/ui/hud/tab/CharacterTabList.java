@@ -1,5 +1,7 @@
 package com.duelco.ui.hud.tab;
 
+import com.duelco.managers.CharacterMapperManager;
+import com.duelco.managers.DataManager;
 import com.duelco.obj.general.Player;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.FontStorage;
@@ -19,6 +21,17 @@ public class CharacterTabList extends TabListRenderer<Player> {
     }
 
     @Override
+    Text getHeaderText() {
+        return Text.literal("Nearby").styled(style -> style.withColor(Colors.CYAN))
+                .append(Text.literal(" (" + CharacterMapperManager.getPlayers().size() + ")").styled(style -> style.withColor(Colors.WHITE)));
+    }
+
+    @Override
+    Text getFooterText() {
+        return null;
+    }
+
+    @Override
     void executeLoop(Player datum, DrawContext context, int i) {
         if (y + animatedHeight > y + ((i % 15) * lineHeight) + 4) {
             // Draw the player's head (size: 16x16 pixels)
@@ -27,7 +40,6 @@ public class CharacterTabList extends TabListRenderer<Player> {
             // 18 char max before trailing off with ".."
             // Draw the player's name next to their head
             context.drawText(client.textRenderer, datum.getCharacterName(), x + padding + 12 + (100 * (i / 15)), y + ((i % 15) * lineHeight) + 4, Colors.WHITE, true);
-//            context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, datum.getCharacterName(), x + padding + 12 + (100 * (i / 15)), y + ((i % 15) * lineHeight), Colors.WHITE);
         }
     }
 

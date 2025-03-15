@@ -20,6 +20,8 @@ public abstract class TabListRenderer<T> {
     protected final int lineHeight = 10;
     protected final int padding = 5;
 
+    protected Text headerText;
+    protected Text footerText;
     protected int x;
     protected int y;
     protected int tabWidth = 200;
@@ -71,21 +73,8 @@ public abstract class TabListRenderer<T> {
 
         if (scrollsVisible) {
             drawScrolls(context);
-            Text test = Text.literal("Online").styled(style -> style.withColor(Colors.GREEN)).append(Text.literal(" (" +
-                    DataManager.getDataStore().getTabData().getCurrentServerPlayerCount() + "/" +
-                    DataManager.getDataStore().getTabData().getTotalPlayerCount() + ")").styled(style -> style.withColor(Colors.WHITE)));
-            Text test2 = Text.literal("TPS: ").styled(style -> style.withColor(Colors.LIGHT_GRAY))
-                    .append(Text.literal(String.valueOf(DataManager.getDataStore().getTabData().getTps()))
-                    .styled(style -> style.withColor(Colors.WHITE)));
-            Text test3 = Text.literal("Ping: ").styled(style -> style.withColor(Colors.LIGHT_GRAY))
-                    .append(Text.literal(String.valueOf(DataManager.getDataStore().getTabData().getPing()))
-                    .styled(style -> style.withColor(Colors.WHITE)))
-                    .append(Text.literal("ms").styled(style -> style.withColor(Colors.WHITE)));
-            context.drawText(client.textRenderer, test, x + padding, y-6, Colors.WHITE, true);
-            context.drawText(client.textRenderer, test2, x + padding, y + animatedHeight+2, Colors.WHITE, true);
-            context.drawText(client.textRenderer, test3, x + padding + 50, y + animatedHeight+2, Colors.WHITE, true);
-//            context.drawTexture(RenderLayer::getGuiTextured, Identifier.of("jimmytools", "ui/scroll_online_top.png"), x-20, y-12, 0, 0, 240, 16, 240, 16);
-//        context.drawTexture(Identifier.of("jimmytools", "textures/ui/scroll_online_top.png"), 10, 10, 0, 0, 32, 32, 32, 32);;
+            if (getHeaderText() != null) context.drawText(client.textRenderer, getHeaderText(), x + padding, y-6, Colors.WHITE, true);
+            if (getFooterText() != null) context.drawText(client.textRenderer, getFooterText(), x + padding, y + animatedHeight+2, Colors.WHITE, true);
         }
     }
 
@@ -94,6 +83,8 @@ public abstract class TabListRenderer<T> {
         context.drawTexture(RenderLayer::getGuiTextured, scrollTexture, x-20, y+animatedHeight, 0, 0, tabWidth + 40, 12, tabWidth + 40, 12);
     }
 
+    abstract Text getHeaderText();
+    abstract Text getFooterText();
     abstract void executeLoop(T datum, DrawContext context, int i);
     abstract void setPosition();
 }

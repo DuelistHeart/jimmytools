@@ -77,8 +77,8 @@ public abstract class TabListRenderer<T> {
     }
 
     private void drawScrolls(DrawContext context) {
-        context.drawTexture(RenderLayer::getGuiTextured, scrollTexture, x-20, y-8, 0, 0, tabWidth + 40, 12, tabWidth + 40, 12);
-        context.drawTexture(RenderLayer::getGuiTextured, scrollTexture, x-20, y+animatedHeight, 0, 0, tabWidth + 40, 12, tabWidth + 40, 12);
+        context.drawTexture(RenderLayer::getGuiTextured, scrollTexture, x-(tabWidth/10), y-8, 0, 0, tabWidth + (tabWidth/5), 12, tabWidth + (tabWidth/5), 12);
+        context.drawTexture(RenderLayer::getGuiTextured, scrollTexture, x-(tabWidth/10), y+animatedHeight, 0, 0, tabWidth + (tabWidth/5), 12, tabWidth + (tabWidth/5), 12);
     }
 
     abstract Text getHeaderText();

@@ -17,7 +17,7 @@ public class CharacterTabList extends TabListRenderer<Player> {
     public CharacterTabList(String id) {
         super(id);
         this.scrollTexture = Identifier.of("jimmytools", "ui/scroll_nearby_top.png");
-        tabWidth = 100;
+        tabWidth = 120;
     }
 
     @Override

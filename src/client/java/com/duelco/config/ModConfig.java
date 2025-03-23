@@ -1,12 +1,14 @@
 package com.duelco.config;
 
 import com.duelco._enum.NamesCmdOptions;
+import com.duelco.handlers.TransformationHelperHandler;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.*;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -196,6 +198,19 @@ public class ModConfig {
                 .category(ConfigCategory.createBuilder()
                         .name(Text.literal("Transformation"))
                         .tooltip(Text.literal("Transformation config"))
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Transformation Setup"))
+                                .description(OptionDescription.of(Text.literal("Config options for setting up transformations.")))
+                                .option(ButtonOption.createBuilder()
+                                        .name(Text.literal("Set Up Character Transformation"))
+                                        .description(OptionDescription.of(Text.literal("Starts a process for setting up a transformation for your current character.")))
+                                        .action((yaclScreen, option) -> {
+                                            TransformationHelperHandler.beginTransformationSetup();
+                                            MinecraftClient.getInstance().setScreen(null);
+                                        })
+                                        .build()
+                                ).build()
+                        )
                         .group(OptionGroup.createBuilder()
                                 .name(Text.literal("Skin Settings"))
                                 .description(OptionDescription.of(Text.literal("Skin settings for transformations")))

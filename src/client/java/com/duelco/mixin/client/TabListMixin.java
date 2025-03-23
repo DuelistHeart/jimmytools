@@ -5,7 +5,10 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.PlayerListHeaderS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.text.Text;
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -15,6 +18,8 @@ import java.util.regex.Pattern;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class TabListMixin {
+
+    @Shadow @Final private static Logger LOGGER;
 
     @Inject(method = "onPlayerListHeader", at = @At("HEAD"))
     private void captureTabList(PlayerListHeaderS2CPacket packet, CallbackInfo ci) {
@@ -36,7 +41,7 @@ public class TabListMixin {
                 DataManager.getDataStore().getTabData().setCurrentServerPlayerCount(Integer.parseInt(onlinePlayers.split(" ")[0]));
                 DataManager.getDataStore().getTabData().setTotalPlayerCount(Integer.parseInt(onlinePlayers.split(" ")[1].substring(1, onlinePlayers.split(" ")[1].length() - 1)));
             } else {
-                System.out.println("No match found!");
+                LOGGER.debug("No match found!");
             }
         }
     }

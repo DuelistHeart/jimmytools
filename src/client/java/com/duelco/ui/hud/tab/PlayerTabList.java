@@ -1,6 +1,7 @@
 package com.duelco.ui.hud.tab;
 
 import com.duelco.managers.DataManager;
+import com.duelco.util.RenderUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.network.PlayerListEntry;

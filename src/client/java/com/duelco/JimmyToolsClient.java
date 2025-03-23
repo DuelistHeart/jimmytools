@@ -12,6 +12,7 @@ import com.duelco.obj.general.Player;
 import com.duelco.ui.hud.tab.CharacterTabList;
 import com.duelco.ui.hud.tab.PlayerTabList;
 import com.duelco.ui.screen.ScreenHandler;
+import com.duelco.util.RenderUtils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -109,8 +110,16 @@ public class JimmyToolsClient implements ClientModInitializer {
 		});
 
 		// Register event to render our custom tab list
-		HudRenderCallback.EVENT.register((drawContext, renderTickCounter) -> playerTabList.render(drawContext));
-		HudRenderCallback.EVENT.register((drawContext, renderTickCounter) -> characterTabList.render(drawContext));
+		HudRenderCallback.EVENT.register((drawContext, renderTickCounter) -> {
+			RenderUtils.drawWithScale(drawContext, 0.95f, 0.95f, 0.95f, () -> {
+				playerTabList.render(drawContext);
+			});
+		});
+		HudRenderCallback.EVENT.register((drawContext, renderTickCounter) -> {
+			RenderUtils.drawWithScale(drawContext, 0.95f, 0.95f, 0.95f, () -> {
+				characterTabList.render(drawContext);
+			});
+		});
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
 			ModConfig.HANDLER.save();

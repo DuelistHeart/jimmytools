@@ -4,7 +4,10 @@ import com.duelco.config.ModConfig;
 import com.duelco.handlers.PlayerMessagerHandler;
 import com.duelco.handlers.TransformationHelperHandler;
 import com.duelco.managers.TransformationHelperManager;
+import com.duelco.util.KeybindUtils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,7 +23,10 @@ public abstract class ChatMixin {
             ModConfig.areTransformationsEnabled = true;
             ModConfig.isTransformed = true;
             TransformationHelperManager.setTransformSkin(chatText.substring(6));
-            PlayerMessagerHandler.sendMessage(Text.literal("After the skin changes, press the KEYBIND key to revert back."));
+            KeyBinding transformKeybind = KeybindUtils.getKeybind("keybinds.key.jimmytools.transform");
+
+            PlayerMessagerHandler.sendMessage(Text.literal(
+                    String.format("After the skin changes, press the [%s] key to revert back.", transformKeybind.getBoundKeyLocalizedText().getString())));
         }
     }
 }

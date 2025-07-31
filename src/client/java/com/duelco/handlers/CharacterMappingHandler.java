@@ -56,6 +56,7 @@ public class CharacterMappingHandler {
                 .sorted(Comparator.comparing((PlayerEntity p) -> p.squaredDistanceTo(player)))
                 .filter(p -> seenNames.add(p.getName().getString())) // Only add if name is not already in the set
                 .limit(count)
+                .sorted(Comparator.comparing((PlayerEntity p) -> p.getName().getString()))
                 .collect(Collectors.toList());
 
     }

@@ -5,6 +5,7 @@ public class TabData {
     private double ping;
     private int currentServerPlayerCount;
     private int totalPlayerCount;
+    private PlotInfo plotInfo;
 
     public double getTps() {
         return tps;
@@ -36,5 +37,13 @@ public class TabData {
 
     public void setTotalPlayerCount(int totalPlayerCount) {
         this.totalPlayerCount = totalPlayerCount;
+    }
+
+    public PlotInfo getPlotInfo() {
+        return plotInfo;
+    }
+
+    public void setPlotInfo(PlotInfo plotInfo) {
+        this.plotInfo = plotInfo;
     }
 }

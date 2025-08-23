@@ -3,13 +3,12 @@ package com.duelco;
 import com.duelco._enum.Screen;
 import com.duelco.config.ModConfig;
 import com.duelco.handlers.BagHandler;
-import com.duelco.handlers.CharacterMappingHandler;
 import com.duelco.handlers.TransformationHelperHandler;
 import com.duelco.listeners.BingoListener;
 import com.duelco.managers.CharacterMapperManager;
 import com.duelco.managers.DataManager;
-import com.duelco.obj.general.Player;
 import com.duelco.ui.hud.tab.CharacterTabList;
+import com.duelco.ui.hud.tab.DistrictTabList;
 import com.duelco.ui.hud.tab.PlayerTabList;
 import com.duelco.ui.screen.ScreenHandler;
 import com.duelco.util.RenderUtils;
@@ -19,25 +18,15 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.PlayerSkinDrawer;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class JimmyToolsClient implements ClientModInitializer {
 	private static KeyBinding transformationToggleKeybind;
@@ -49,6 +38,7 @@ public class JimmyToolsClient implements ClientModInitializer {
 	private static KeyBinding bagFourKeybind;
 	private static PlayerTabList playerTabList;
 	private static CharacterTabList characterTabList;
+	private static DistrictTabList districtTabList;
 
 	private static List<PlayerListEntry> playerListEntries = new ArrayList<>();
 
@@ -63,6 +53,7 @@ public class JimmyToolsClient implements ClientModInitializer {
 
 		playerTabList = new PlayerTabList("player_tab_list");
 		characterTabList = new CharacterTabList("character_tab_list");
+		districtTabList = new DistrictTabList("district_tab_list");
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (transformationToggleKeybind.wasPressed()) {
@@ -105,6 +96,26 @@ public class JimmyToolsClient implements ClientModInitializer {
 							&& !List.of("Nearby", "Build Server", "Server").contains(entry.getDisplayName().getString());
 				}).toList();
 			}
+
+			if (DataManager.getDataStore().getTabData().getPlotInfo() != null) {
+				ArrayList<String> testData = new ArrayList<>();
+				String district = DataManager.getDataStore().getTabData().getPlotInfo().getDistrict();
+				districtTabList.setDistrictName(district);
+				testData.add("District: " + district);
+				String plotOwner = DataManager.getDataStore().getTabData().getPlotInfo().getOwner() == null
+						? "Unowned"
+						: DataManager.getDataStore().getTabData().getPlotInfo().getOwner();
+				String plotName = DataManager.getDataStore().getTabData().getPlotInfo().getPlot();
+
+				if (plotName != null) {
+					testData.add("Plot: " + plotName);
+					testData.add("Owned by: " + plotOwner);
+				}
+				districtTabList.setData(testData);
+			} else {
+				districtTabList.setData(new ArrayList<>());
+			}
+
 			playerTabList.setData(playerListEntries);
 			characterTabList.setData(CharacterMapperManager.getPlayers());
 		});
@@ -118,6 +129,11 @@ public class JimmyToolsClient implements ClientModInitializer {
 		HudRenderCallback.EVENT.register((drawContext, renderTickCounter) -> {
 			RenderUtils.drawWithScale(drawContext, 0.95f, 0.95f, 0.95f, () -> {
 				characterTabList.render(drawContext);
+			});
+		});
+		HudRenderCallback.EVENT.register((drawContext, renderTickCounter) -> {
+			RenderUtils.drawWithScale(drawContext, 0.95f, 0.95f, 0.95f, () -> {
+				districtTabList.render(drawContext);
 			});
 		});
 

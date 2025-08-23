@@ -66,7 +66,13 @@ dependencies {
 	// With ForgeGradle 5 or NeoGradle, use the runtimeOnly configuration
 	// With ForgeGradle 2, use the implementation configuration as runtimeOnly appears to be broken
 	modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.2.1");
-	
+
+	// JUnit tests
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+}
+
+test {
+	useJUnitPlatform()
 }
 
 processResources {

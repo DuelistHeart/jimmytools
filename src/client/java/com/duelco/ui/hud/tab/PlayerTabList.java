@@ -18,12 +18,14 @@ public class PlayerTabList extends TabListRenderer<PlayerListEntry> {
 
     public PlayerTabList(String id) {
         super(id);
+        this.tabWidth = 180;
+        this.tabHeight = (12 * lineHeight) + padding;
         this.scrollTexture = Identifier.of("jimmytools", "ui/scroll_online_top.png");
     }
 
     void setPosition() {
         this.x = (client.getWindow().getScaledWidth() / 2 - tabWidth / 2) - 75;
-        this.y = (client.getWindow().getScaledHeight() / 2 - tabHeight / 2) - 5;
+        this.y = (client.getWindow().getScaledHeight() / 2 - tabHeight / 2) - 50;
     }
 
     @Override
@@ -48,7 +50,7 @@ public class PlayerTabList extends TabListRenderer<PlayerListEntry> {
 
     @Override
     void executeLoop(PlayerListEntry datum, DrawContext context, int i) {
-        if (y + animatedHeight > y + ((i % 15) * lineHeight) + 4) {
+        if (y + animatedHeight > y + ((i % 12) * lineHeight) + 4) {
             PlayerSkinDrawer.draw(context, datum.getSkinTextures().texture(), x + padding + (100 * (i / 15)), y + ((i % 15) * lineHeight) + 4, 8, true, false, -1);
 
             // Draw the player's name next to their head

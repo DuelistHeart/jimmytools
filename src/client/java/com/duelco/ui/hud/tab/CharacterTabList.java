@@ -46,6 +46,6 @@ public class CharacterTabList extends TabListRenderer<Player> {
     @Override
     void setPosition() {
         this.x = (client.getWindow().getScaledWidth() / 2 - tabWidth / 2) + 125;
-        this.y = (client.getWindow().getScaledHeight() / 2 - tabHeight / 2) - 5;
+        this.y = (client.getWindow().getScaledHeight() / 2 - tabHeight / 2) - 25;
     }
 }

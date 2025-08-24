@@ -5,13 +5,14 @@
   "client": [
     "ChatMixin",
     "MainMixin",
-    "ServerJoinMixin"
+    "PlayerListHudMixin",
+    "ServerJoinMixin",
+    "TabListMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "mixins": [
-    "DistrictIdentifierMixin",
     "TitleMixin"
   ]
 }

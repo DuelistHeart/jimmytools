@@ -3,21 +3,31 @@ package com.duelco;
 import com.duelco._enum.Screen;
 import com.duelco.config.ModConfig;
 import com.duelco.handlers.BagHandler;
+import com.duelco.handlers.FeatureFlagHandler;
 import com.duelco.handlers.TransformationHelperHandler;
 import com.duelco.listeners.BingoListener;
+import com.duelco.managers.CharacterMapperManager;
 import com.duelco.managers.DataManager;
+import com.duelco.ui.hud.tab.CharacterTabList;
+import com.duelco.ui.hud.tab.DistrictTabList;
+import com.duelco.ui.hud.tab.PlayerTabList;
 import com.duelco.ui.screen.ScreenHandler;
+import com.duelco.util.RenderUtils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.resource.ResourceType;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 public class JimmyToolsClient implements ClientModInitializer {
 	private static KeyBinding transformationToggleKeybind;
@@ -27,6 +37,11 @@ public class JimmyToolsClient implements ClientModInitializer {
 	private static KeyBinding bagTwoKeybind;
 	private static KeyBinding bagThreeKeybind;
 	private static KeyBinding bagFourKeybind;
+	private static PlayerTabList playerTabList;
+	private static CharacterTabList characterTabList;
+	private static DistrictTabList districtTabList;
+
+	private static List<PlayerListEntry> playerListEntries = new ArrayList<>();
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("jimmytools-client");
 
@@ -36,6 +51,10 @@ public class JimmyToolsClient implements ClientModInitializer {
 		registerKeybinds();
 		DataManager.loadData();
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new BingoListener());
+
+		playerTabList = new PlayerTabList("player_tab_list");
+		characterTabList = new CharacterTabList("character_tab_list");
+		districtTabList = new DistrictTabList("district_tab_list");
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (transformationToggleKeybind.wasPressed()) {
@@ -69,6 +88,49 @@ public class JimmyToolsClient implements ClientModInitializer {
 				ScreenHandler.displayScreen(Screen.CONFIG_SCREEN, client);
 			}
 		});
+
+		if (FeatureFlagHandler.isCustomTablistEnabled()) {
+			ClientTickEvents.END_CLIENT_TICK.register(client -> {
+				if (client.getNetworkHandler() != null) {
+					playerListEntries = client.getNetworkHandler().getPlayerList().stream().filter(entry -> {
+						return entry.getDisplayName() != null && !entry.getDisplayName().getString().isEmpty()
+								&& entry.getDisplayName().getSiblings().size() == 1
+								&& !List.of("Nearby", "Build Server", "Server").contains(entry.getDisplayName().getString());
+					}).toList();
+				}
+
+				if (DataManager.getDataStore().getTabData().getPlotInfo() != null) {
+					ArrayList<String> testData = new ArrayList<>();
+					String district = DataManager.getDataStore().getTabData().getPlotInfo().getDistrict();
+					districtTabList.setDistrictName(district);
+					testData.add("District: " + district);
+					String plotOwner = DataManager.getDataStore().getTabData().getPlotInfo().getOwner() == null
+							? "Unowned"
+							: DataManager.getDataStore().getTabData().getPlotInfo().getOwner();
+					String plotName = DataManager.getDataStore().getTabData().getPlotInfo().getPlot();
+
+					if (plotName != null) {
+						testData.add("Plot: " + plotName);
+						testData.add("Owned by: " + plotOwner);
+					}
+					districtTabList.setData(testData);
+				} else {
+					districtTabList.setData(new ArrayList<>());
+				}
+
+				playerTabList.setData(playerListEntries);
+				characterTabList.setData(CharacterMapperManager.getPlayers());
+			});
+
+			// Register event to render our custom tab list
+			HudRenderCallback.EVENT.register((drawContext, renderTickCounter) -> {
+				RenderUtils.drawWithScale(drawContext, 0.95f, 0.95f, 0.95f, () -> {
+					playerTabList.render(drawContext);
+					characterTabList.render(drawContext);
+					districtTabList.render(drawContext);
+				});
+			});
+		}
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
 			ModConfig.HANDLER.save();

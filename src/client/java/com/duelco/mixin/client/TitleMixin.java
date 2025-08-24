@@ -1,6 +1,7 @@
 package com.duelco.mixin.client;
 
 import com.duelco.config.ModConfig;
+import com.duelco.handlers.PlayerMessagerHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
@@ -43,7 +44,7 @@ public class TitleMixin {
 
             if (client.player != null) {
                 if (lvlUpMsg != null && !Objects.equals(lvlUpMsg.getString(), "[]") && !pastLvlUpMessages.contains(lvlUpMsg.getString())) {
-                    client.player.sendMessage(lvlUpMsg, false);
+                    PlayerMessagerHandler.sendMessage(lvlUpMsg);
                     pastLvlUpMessages.add(lvlUpMsg.getString());
                 }
             }
@@ -73,11 +74,7 @@ public class TitleMixin {
             Text levelText = Text.literal(level).formatted(Formatting.AQUA);
             LOGGER.debug("Level: " + level);
 
-            return Text.literal("")
-                    .append(Text.literal("[").formatted(Formatting.GREEN))
-                    .append(Text.literal("JimmyTools").formatted(Formatting.GRAY))
-                    .append(Text.literal("] ").formatted(Formatting.GREEN))
-                    .append("Your ")
+            return Text.literal("Your ")
                     .append(activityText)
                     .append(" Level has increased to ")
                     .append(levelText)

@@ -1,12 +1,15 @@
 package com.duelco.config;
 
 import com.duelco._enum.NamesCmdOptions;
+import com.duelco.handlers.FeatureFlagHandler;
+import com.duelco.handlers.TransformationHelperHandler;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.*;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -38,6 +41,12 @@ public class ModConfig {
     @SerialEntry
     public static boolean isBingoCardGenerateSoundEnabled = true;
 
+    @SerialEntry
+    public static boolean isCustomTablistEnabled = false;
+    @SerialEntry
+    public static float openScrollSpeed = 3.0f;
+    @SerialEntry
+    public static float closeScrollSpeed = 8.0f;
 
     @SerialEntry
     public static boolean areTransformationsEnabled = false;
@@ -56,7 +65,7 @@ public class ModConfig {
     public static NamesCmdOptions startupCommandsNamesOption = NamesCmdOptions.NAMES_CHAR;
 
     public static YetAnotherConfigLib build() {
-        return YetAnotherConfigLib.createBuilder()
+        YetAnotherConfigLib.Builder config =  YetAnotherConfigLib.createBuilder()
                 .title(Text.literal("JimmyTools Config"))
                 .category(ConfigCategory.createBuilder()
                         .name(Text.literal("Bingo"))
@@ -124,8 +133,9 @@ public class ModConfig {
                                         .controller(BooleanControllerBuilder::create)
                                         .build())
                                 .build())
-                        .build())
-                .category(ConfigCategory.createBuilder()
+                        .build());
+
+        config.category(ConfigCategory.createBuilder()
                         .name(Text.literal("ChatUtils"))
                         .tooltip(Text.literal("ChatUtils config"))
                         .group(OptionGroup.createBuilder()
@@ -156,10 +166,57 @@ public class ModConfig {
                                                 .formatValue(v -> Text.translatable("jimmytools.config.startupcommands.namesoptions." + v.name().toLowerCase())))
                                         .build())
                                 .build())
-                        .build())
-                .category(ConfigCategory.createBuilder()
+                        .build());
+
+        if (FeatureFlagHandler.isCustomTablistEnabled()) {
+            config.category(ConfigCategory.createBuilder()
+                    .name(Text.literal("CustomTab"))
+                    .tooltip(Text.literal("Custom Tablist config"))
+                    .group(OptionGroup.createBuilder()
+                            .name(Text.literal("Tab Options"))
+                            .description(OptionDescription.of(Text.literal("Options for the custom tab list.")))
+                            .option(Option.<Boolean>createBuilder()
+                                    .name(Text.literal("Enable Custom Tablist"))
+                                    .description(OptionDescription.of(Text.literal("Enables/Disables the custom tablist.")))
+                                    .binding(false, () -> isCustomTablistEnabled, newVal -> isCustomTablistEnabled = newVal)
+                                    .controller(BooleanControllerBuilder::create)
+                                    .build())
+                            .build())
+                    .option(Option.<Float>createBuilder()
+                            .name(Text.literal("Scroll Open Speed"))
+                            .description(OptionDescription.of(Text.literal("Determines how fast the scrolls open up.")))
+                            .binding(3.0f, () -> openScrollSpeed, newVal -> openScrollSpeed = newVal)
+                            .controller(floatOption -> FloatSliderControllerBuilder.create(floatOption)
+                                    .range(1.0f, 12.0f)
+                                    .step(1.0f))
+                            .build())
+                    .option(Option.<Float>createBuilder()
+                            .name(Text.literal("Scroll Close Speed"))
+                            .description(OptionDescription.of(Text.literal("Determines how fast the scrolls close.")))
+                            .binding(8.0f, () -> closeScrollSpeed, newVal -> closeScrollSpeed = newVal)
+                            .controller(floatOption -> FloatSliderControllerBuilder.create(floatOption)
+                                    .range(1.0f, 12.0f)
+                                    .step(1.0f))
+                            .build())
+                    .build());
+        }
+
+        config.category(ConfigCategory.createBuilder()
                         .name(Text.literal("Transformation"))
                         .tooltip(Text.literal("Transformation config"))
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Transformation Setup"))
+                                .description(OptionDescription.of(Text.literal("Config options for setting up transformations.")))
+                                .option(ButtonOption.createBuilder()
+                                        .name(Text.literal("Set Up Character Transformation"))
+                                        .description(OptionDescription.of(Text.literal("Starts a process for setting up a transformation for your current character.")))
+                                        .action((yaclScreen, option) -> {
+                                            TransformationHelperHandler.beginTransformationSetup();
+                                            MinecraftClient.getInstance().setScreen(null);
+                                        })
+                                        .build()
+                                ).build()
+                        )
                         .group(OptionGroup.createBuilder()
                                 .name(Text.literal("Skin Settings"))
                                 .description(OptionDescription.of(Text.literal("Skin settings for transformations")))
@@ -190,5 +247,7 @@ public class ModConfig {
                                 .build())
                         .build())
                 .build();
+
+        return config.build();
     }
 }

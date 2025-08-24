@@ -2,13 +2,14 @@ package com.duelco.managers;
 
 import com.duelco.obj.general.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CharacterMapperManager {
-    private static List<Player> players;
+    private static List<Player> players = new ArrayList<>();
 
-    public static void addMapping(String playerName, String characterName) {
-        players.add(new Player(playerName, characterName));
+    public static void setMappings(List<Player> players) {
+        CharacterMapperManager.players = players;
     }
 
     public static List<Player> getPlayers() {

@@ -3,6 +3,7 @@ package com.duelco;
 import com.duelco._enum.Screen;
 import com.duelco.config.ModConfig;
 import com.duelco.handlers.BagHandler;
+import com.duelco.handlers.FeatureFlagHandler;
 import com.duelco.handlers.TransformationHelperHandler;
 import com.duelco.listeners.BingoListener;
 import com.duelco.managers.CharacterMapperManager;
@@ -120,22 +121,16 @@ public class JimmyToolsClient implements ClientModInitializer {
 			characterTabList.setData(CharacterMapperManager.getPlayers());
 		});
 
-		// Register event to render our custom tab list
-		HudRenderCallback.EVENT.register((drawContext, renderTickCounter) -> {
-			RenderUtils.drawWithScale(drawContext, 0.95f, 0.95f, 0.95f, () -> {
-				playerTabList.render(drawContext);
+		if (FeatureFlagHandler.isCustomTablistEnabled()) {
+			// Register event to render our custom tab list
+			HudRenderCallback.EVENT.register((drawContext, renderTickCounter) -> {
+				RenderUtils.drawWithScale(drawContext, 0.95f, 0.95f, 0.95f, () -> {
+					playerTabList.render(drawContext);
+					characterTabList.render(drawContext);
+					districtTabList.render(drawContext);
+				});
 			});
-		});
-		HudRenderCallback.EVENT.register((drawContext, renderTickCounter) -> {
-			RenderUtils.drawWithScale(drawContext, 0.95f, 0.95f, 0.95f, () -> {
-				characterTabList.render(drawContext);
-			});
-		});
-		HudRenderCallback.EVENT.register((drawContext, renderTickCounter) -> {
-			RenderUtils.drawWithScale(drawContext, 0.95f, 0.95f, 0.95f, () -> {
-				districtTabList.render(drawContext);
-			});
-		});
+		}
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
 			ModConfig.HANDLER.save();

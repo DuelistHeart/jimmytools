@@ -1,5 +1,6 @@
 package com.duelco.mixin.client;
 
+import com.duelco.handlers.FeatureFlagHandler;
 import com.duelco.handlers.RegexHandler;
 import com.duelco.managers.DataManager;
 import com.duelco.obj.general.PlotInfo;
@@ -26,42 +27,42 @@ public class TabListMixin {
 
     @Inject(method = "onPlayerListHeader", at = @At("HEAD"))
     private void captureTabList(PlayerListHeaderS2CPacket packet, CallbackInfo ci) {
-        if (packet != null) {
-            // Lords of Minecraft 2\nonline: 4 (24) | tps: 20.0 | ping: 0ms
-            String header = packet.header().getString();
-            String footer = packet.footer().getString();
+        if (FeatureFlagHandler.isCustomTablistEnabled()) {
+            if (packet != null) {
+                // Lords of Minecraft 2\nonline: 4 (24) | tps: 20.0 | ping: 0ms
+                String header = packet.header().getString();
+                String footer = packet.footer().getString();
 
-            // Regex pattern
-            Pattern pattern = Pattern.compile("(\\d+ \\(\\d+\\)) \\| tps: ([\\d.]+) \\| ping: (\\d+)ms");
-            Matcher matcher = pattern.matcher(header);
+                // Regex pattern
+                Pattern pattern = Pattern.compile("(\\d+ \\(\\d+\\)) \\| tps: ([\\d.]+) \\| ping: (\\d+)ms");
+                Matcher matcher = pattern.matcher(header);
 
-            PlotInfo plotInfo = RegexHandler.parsePlotInfo(footer.split("\n")[0]); // Parse footer line for district/plot info
+                PlotInfo plotInfo = RegexHandler.parsePlotInfo(footer.split("\n")[0]); // Parse footer line for district/plot info
 
-            if (plotInfo != null) {
-                LOGGER.info("Parsed plot info: Plot: {}, District: {}, Owner: {}", plotInfo.getPlot(), plotInfo.getDistrict(), plotInfo.getOwner());
+                if (plotInfo != null) {
+                    // Update DataManager with parsed plot info
+                    DataManager.getDataStore().getTabData().setPlotInfo(plotInfo);
 
-                // Update DataManager with parsed plot info
-                DataManager.getDataStore().getTabData().setPlotInfo(plotInfo);
-
-                // Uncomment if you want to set individual fields
+                    // Uncomment if you want to set individual fields
 //                DataManager.getDataStore().getTabData().setDistrict(plotInfo.getDistrict());
 //                DataManager.getDataStore().getTabData().setPlot(plotInfo.getPlot());
 //                DataManager.getDataStore().getTabData().setOwner(plotInfo.getOwner());
-            } else {
-                LOGGER.debug("Failed to parse plot info from footer: {}", footer);
-            }
+                } else {
+                    LOGGER.debug("Failed to parse plot info from footer: {}", footer);
+                }
 
-            if (matcher.find()) {
-                String onlinePlayers = matcher.group(1);  // "4 (24)"
-                String tps = matcher.group(2);            // "20.0"
-                String ping = matcher.group(3);           // "0ms"
+                if (matcher.find()) {
+                    String onlinePlayers = matcher.group(1);  // "4 (24)"
+                    String tps = matcher.group(2);            // "20.0"
+                    String ping = matcher.group(3);           // "0ms"
 
-                DataManager.getDataStore().getTabData().setPing(Double.parseDouble(ping));
-                DataManager.getDataStore().getTabData().setTps(Double.parseDouble(tps));
-                DataManager.getDataStore().getTabData().setCurrentServerPlayerCount(Integer.parseInt(onlinePlayers.split(" ")[0]));
-                DataManager.getDataStore().getTabData().setTotalPlayerCount(Integer.parseInt(onlinePlayers.split(" ")[1].substring(1, onlinePlayers.split(" ")[1].length() - 1)));
-            } else {
-                LOGGER.debug("No match found!");
+                    DataManager.getDataStore().getTabData().setPing(Double.parseDouble(ping));
+                    DataManager.getDataStore().getTabData().setTps(Double.parseDouble(tps));
+                    DataManager.getDataStore().getTabData().setCurrentServerPlayerCount(Integer.parseInt(onlinePlayers.split(" ")[0]));
+                    DataManager.getDataStore().getTabData().setTotalPlayerCount(Integer.parseInt(onlinePlayers.split(" ")[1].substring(1, onlinePlayers.split(" ")[1].length() - 1)));
+                } else {
+                    LOGGER.debug("No match found!");
+                }
             }
         }
     }

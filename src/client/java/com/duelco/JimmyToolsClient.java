@@ -89,39 +89,39 @@ public class JimmyToolsClient implements ClientModInitializer {
 			}
 		});
 
-		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (client.getNetworkHandler() != null) {
-				playerListEntries = client.getNetworkHandler().getPlayerList().stream().filter(entry -> {
-                    return entry.getDisplayName() != null && !entry.getDisplayName().getString().isEmpty()
-							&& entry.getDisplayName().getSiblings().size() == 1
-							&& !List.of("Nearby", "Build Server", "Server").contains(entry.getDisplayName().getString());
-				}).toList();
-			}
-
-			if (DataManager.getDataStore().getTabData().getPlotInfo() != null) {
-				ArrayList<String> testData = new ArrayList<>();
-				String district = DataManager.getDataStore().getTabData().getPlotInfo().getDistrict();
-				districtTabList.setDistrictName(district);
-				testData.add("District: " + district);
-				String plotOwner = DataManager.getDataStore().getTabData().getPlotInfo().getOwner() == null
-						? "Unowned"
-						: DataManager.getDataStore().getTabData().getPlotInfo().getOwner();
-				String plotName = DataManager.getDataStore().getTabData().getPlotInfo().getPlot();
-
-				if (plotName != null) {
-					testData.add("Plot: " + plotName);
-					testData.add("Owned by: " + plotOwner);
-				}
-				districtTabList.setData(testData);
-			} else {
-				districtTabList.setData(new ArrayList<>());
-			}
-
-			playerTabList.setData(playerListEntries);
-			characterTabList.setData(CharacterMapperManager.getPlayers());
-		});
-
 		if (FeatureFlagHandler.isCustomTablistEnabled()) {
+			ClientTickEvents.END_CLIENT_TICK.register(client -> {
+				if (client.getNetworkHandler() != null) {
+					playerListEntries = client.getNetworkHandler().getPlayerList().stream().filter(entry -> {
+						return entry.getDisplayName() != null && !entry.getDisplayName().getString().isEmpty()
+								&& entry.getDisplayName().getSiblings().size() == 1
+								&& !List.of("Nearby", "Build Server", "Server").contains(entry.getDisplayName().getString());
+					}).toList();
+				}
+
+				if (DataManager.getDataStore().getTabData().getPlotInfo() != null) {
+					ArrayList<String> testData = new ArrayList<>();
+					String district = DataManager.getDataStore().getTabData().getPlotInfo().getDistrict();
+					districtTabList.setDistrictName(district);
+					testData.add("District: " + district);
+					String plotOwner = DataManager.getDataStore().getTabData().getPlotInfo().getOwner() == null
+							? "Unowned"
+							: DataManager.getDataStore().getTabData().getPlotInfo().getOwner();
+					String plotName = DataManager.getDataStore().getTabData().getPlotInfo().getPlot();
+
+					if (plotName != null) {
+						testData.add("Plot: " + plotName);
+						testData.add("Owned by: " + plotOwner);
+					}
+					districtTabList.setData(testData);
+				} else {
+					districtTabList.setData(new ArrayList<>());
+				}
+
+				playerTabList.setData(playerListEntries);
+				characterTabList.setData(CharacterMapperManager.getPlayers());
+			});
+
 			// Register event to render our custom tab list
 			HudRenderCallback.EVENT.register((drawContext, renderTickCounter) -> {
 				RenderUtils.drawWithScale(drawContext, 0.95f, 0.95f, 0.95f, () -> {

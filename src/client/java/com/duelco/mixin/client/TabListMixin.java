@@ -4,6 +4,7 @@ import com.duelco.handlers.FeatureFlagHandler;
 import com.duelco.handlers.RegexHandler;
 import com.duelco.managers.DataManager;
 import com.duelco.obj.general.PlotInfo;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.PlayerListHeaderS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
@@ -20,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Mixin(ClientPlayNetworkHandler.class)
+@Mixin(ClientPlayNetworking.class)
 public class TabListMixin {
 
     @Shadow @Final private static Logger LOGGER;

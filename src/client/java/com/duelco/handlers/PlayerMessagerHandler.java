@@ -1,26 +1,26 @@
 package com.duelco.handlers;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PlayerMessagerHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger("handlers.PlayerMessagerHandler");
-    private static final MinecraftClient client;
-    private static final Text prefix;
+    private static final Minecraft client;
+    private static final Component prefix;
 
     static {
-        client = MinecraftClient.getInstance();
-        prefix = Text.literal("[").formatted(Formatting.GREEN)
-                .append(Text.literal("JimmyTools").formatted(Formatting.GRAY))
-                .append(Text.literal("] ").formatted(Formatting.GREEN));
+        client = Minecraft.getInstance();
+        prefix = Component.literal("[").withStyle(ChatFormatting.GREEN)
+                .append(Component.literal("JimmyTools").withStyle(ChatFormatting.GRAY))
+                .append(Component.literal("] ").withStyle(ChatFormatting.GREEN));
     }
 
-    public static void sendMessage(Text message) {
+    public static void sendMessage(Component message) {
         LOGGER.info("Sending message: {}", message);
 
-        if (client.player != null) client.player.sendMessage(prefix.copy().append(message), false);
+        if (client.player != null) client.player.sendSystemMessage(prefix.copy().append(message));
     }
 }

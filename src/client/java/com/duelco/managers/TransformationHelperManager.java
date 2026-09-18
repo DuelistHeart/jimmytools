@@ -2,7 +2,7 @@ package com.duelco.managers;
 
 import com.duelco.config.ModConfig;
 import com.duelco.handlers.TransformationHelperHandler;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ public class TransformationHelperManager {
                 return ModConfig.transformationSkin;
             }
         } else {
-            ToastManager.displayToast(Text.of("Transformation Error"), Text.of("Transformation skin is not set in the config file."));
+            ToastManager.displayToast("Transformation Error", "Transformation skin is not set in the config file.");
             return null;
         }
     }

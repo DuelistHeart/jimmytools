@@ -13,30 +13,30 @@ import com.duelco.ui.hud.tab.DistrictTabList;
 import com.duelco.ui.hud.tab.PlayerTabList;
 import com.duelco.ui.screen.ScreenHandler;
 import com.duelco.util.RenderUtils;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.resource.ResourceType;
-import org.lwjgl.glfw.GLFW;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class JimmyToolsClient implements ClientModInitializer {
-	private static KeyBinding transformationToggleKeybind;
-	private static KeyBinding bingoScreenKeybind;
-	private static KeyBinding modMenuKeybind;
-	private static KeyBinding bagOneKeybind;
-	private static KeyBinding bagTwoKeybind;
-	private static KeyBinding bagThreeKeybind;
-	private static KeyBinding bagFourKeybind;
+	private static KeyMapping transformationToggleKeybind;
+	private static KeyMapping bingoScreenKeybind;
+	private static KeyMapping modMenuKeybind;
+	private static KeyMapping bagOneKeybind;
+	private static KeyMapping bagTwoKeybind;
+	private static KeyMapping bagThreeKeybind;
+	private static KeyMapping bagFourKeybind;
 	private static PlayerTabList playerTabList;
 	private static CharacterTabList characterTabList;
 	private static DistrictTabList districtTabList;
@@ -57,34 +57,34 @@ public class JimmyToolsClient implements ClientModInitializer {
 		districtTabList = new DistrictTabList("district_tab_list");
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			while (transformationToggleKeybind.wasPressed()) {
+			while (transformationToggleKeybind.isDown()) {
 				if (ModConfig.areTransformationsEnabled) {
 					TransformationHelperHandler.execute();
 				}
 			}
-			while (bingoScreenKeybind.wasPressed()) {
+			while (bingoScreenKeybind.isDown()) {
 				ScreenHandler.displayScreen(Screen.BINGO_CARDS_SCREEN, client);
 			}
-			while (bagOneKeybind.wasPressed()) {
+			while (bagOneKeybind.isDown()) {
 				ScreenHandler.displayScreen(Screen.INVENTORY_SCREEN, client);
 				BagHandler.clickCraftingSlot(client, 0);
 			}
-			while (bagTwoKeybind.wasPressed()) {
+			while (bagTwoKeybind.isDown()) {
 				ScreenHandler.displayScreen(Screen.INVENTORY_SCREEN, client);
 				BagHandler.clickCraftingSlot(client, 1);
 			}
-			while (bagThreeKeybind.wasPressed()) {
+			while (bagThreeKeybind.isDown()) {
 				ScreenHandler.displayScreen(Screen.INVENTORY_SCREEN, client);
 				BagHandler.clickCraftingSlot(client, 2);
 			}
-			while (bagFourKeybind.wasPressed()) {
+			while (bagFourKeybind.isDown()) {
 				ScreenHandler.displayScreen(Screen.INVENTORY_SCREEN, client);
 				BagHandler.clickCraftingSlot(client, 3);
 			}
 		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			while (modMenuKeybind.wasPressed()) {
+			while (modMenuKeybind.isDown()) {
 				ScreenHandler.displayScreen(Screen.CONFIG_SCREEN, client);
 			}
 		});
@@ -138,53 +138,55 @@ public class JimmyToolsClient implements ClientModInitializer {
 	}
 
 	private void registerKeybinds() {
-		transformationToggleKeybind = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+		KeyMapping.Category jimmyToolsCategory = KeyMapping.Category.register(Identifier.parse("jimmytools:category.jimmytools"));
+
+		transformationToggleKeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"keybinds.key.jimmytools.transform", // The translation key of the keybinding's name
-				InputUtil.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
-				GLFW.GLFW_KEY_K, // The keycode of the key
-				"keybinds.category.jimmytools" // The translation key of the keybinding's category.
+				InputConstants.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
+				InputConstants.KEY_K, // The keycode of the key
+				jimmyToolsCategory // The translation key of the keybinding's category.
 		));
 
-		bingoScreenKeybind = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+		bingoScreenKeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"keybinds.key.jimmytools.bingo_screen",
-				InputUtil.Type.KEYSYM,
-				GLFW.GLFW_KEY_B,
-				"keybinds.category.jimmytools"
+				InputConstants.Type.KEYSYM,
+				InputConstants.KEY_B,
+				jimmyToolsCategory
 		));
 
-		modMenuKeybind = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+		modMenuKeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"keybinds.key.jimmytools.modmenu",
-				InputUtil.Type.KEYSYM,
-				GLFW.GLFW_KEY_M,
-				"keybinds.category.jimmytools"
+				InputConstants.Type.KEYSYM,
+				InputConstants.KEY_M,
+				jimmyToolsCategory
 		));
 
-		bagOneKeybind = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+		bagOneKeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"keybinds.key.jimmytools.openbagone",
-				InputUtil.Type.KEYSYM,
-				GLFW.GLFW_KEY_UP,
-				"keybinds.category.jimmytools"
+				InputConstants.Type.KEYSYM,
+				InputConstants.KEY_UP,
+				jimmyToolsCategory
 		));
 
-		bagTwoKeybind = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+		bagTwoKeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"keybinds.key.jimmytools.openbagtwo",
-				InputUtil.Type.KEYSYM,
-				GLFW.GLFW_KEY_RIGHT,
-				"keybinds.category.jimmytools"
+				InputConstants.Type.KEYSYM,
+				InputConstants.KEY_RIGHT,
+				jimmyToolsCategory
 		));
 
-		bagThreeKeybind = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+		bagThreeKeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"keybinds.key.jimmytools.openbagthree",
-				InputUtil.Type.KEYSYM,
-				GLFW.GLFW_KEY_DOWN,
-				"keybinds.category.jimmytools"
+				InputConstants.Type.KEYSYM,
+				InputConstants.KEY_DOWN,
+				jimmyToolsCategory
 		));
 
-		bagFourKeybind = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+		bagFourKeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"keybinds.key.jimmytools.openbagfour",
-				InputUtil.Type.KEYSYM,
-				GLFW.GLFW_KEY_LEFT,
-				"keybinds.category.jimmytools"
+				InputConstants.Type.KEYSYM,
+				InputConstants.KEY_LEFT,
+				jimmyToolsCategory
 		));
 	}
 }

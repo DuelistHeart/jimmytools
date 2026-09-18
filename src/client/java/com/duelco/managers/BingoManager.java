@@ -2,7 +2,6 @@ package com.duelco.managers;
 
 import com.duelco.config.ModConfig;
 import com.duelco.obj.bingo.BingoCard;
-import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ public class BingoManager {
 
             return generatedCard;
         } else {
-            ToastManager.displayToast(Text.of("Max Cards Reached"), Text.of("Max cards currently set to " + ModConfig.bingoMaxCards));
+            ToastManager.displayToast("Max Cards Reached", "Max cards currently set to " + ModConfig.bingoMaxCards);
             return null;
         }
     }

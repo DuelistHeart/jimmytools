@@ -1,6 +1,6 @@
 package com.duelco.obj.general;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 public class Player {
     private String playerName;

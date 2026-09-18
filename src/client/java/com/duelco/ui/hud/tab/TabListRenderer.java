@@ -3,9 +3,11 @@ package com.duelco.ui.hud.tab;
 import com.duelco.config.ModConfig;
 import com.duelco.handlers.CharacterMappingHandler;
 import com.duelco.managers.DataManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.resources.Identifier;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
@@ -14,7 +16,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public abstract class TabListRenderer<T> {
-    protected static final MinecraftClient client = MinecraftClient.getInstance();
+    protected static final Minecraft client = Minecraft.getInstance();
     protected int animatedHeight = 0;
     protected final float ANIMATION_SPEED = 2.0f;
     protected final int lineHeight = 10;

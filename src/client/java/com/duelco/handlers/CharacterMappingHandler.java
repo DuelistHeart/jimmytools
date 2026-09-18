@@ -2,7 +2,7 @@ package com.duelco.handlers;
 
 import com.duelco.managers.CharacterMapperManager;
 import com.duelco.obj.general.Player;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class CharacterMappingHandler {
-    private static final MinecraftClient client = MinecraftClient.getInstance();
+    private static final Minecraft client = Minecraft.getInstance();
 
     public static void mapNearbyPlayers() {
         List<Player> mappedPlayers = new ArrayList<>();

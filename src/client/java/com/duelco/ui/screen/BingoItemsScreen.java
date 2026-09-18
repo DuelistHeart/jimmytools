@@ -4,21 +4,22 @@ import com.duelco._enum.Screen;
 import com.duelco.obj.bingo.BingoItem;
 import com.duelco.obj.bingo.BingoPossibleItemsList;
 import io.wispforest.owo.ui.base.BaseOwoScreen;
-import io.wispforest.owo.ui.component.Components;
 import io.wispforest.owo.ui.component.TextBoxComponent;
-import io.wispforest.owo.ui.container.Containers;
+import io.wispforest.owo.ui.component.UIComponents;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.container.ScrollContainer;
+import io.wispforest.owo.ui.container.UIContainers;
 import io.wispforest.owo.ui.core.*;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 public class BingoItemsScreen extends BaseOwoScreen<FlowLayout> {
-    private static FlowLayout bingoPossibleItemsContainer = (FlowLayout) Containers.verticalFlow(Sizing.fixed(500), Sizing.content()).allowOverflow(true);
+    private static FlowLayout bingoPossibleItemsContainer = (FlowLayout) UIContainers.verticalFlow(Sizing.fixed(500), Sizing.content()).allowOverflow(true);
 
     @Override
     protected @NotNull OwoUIAdapter<FlowLayout> createAdapter() {
-        return OwoUIAdapter.create(this, Containers::verticalFlow);
+        return OwoUIAdapter.create(this, UIContainers::verticalFlow);
     }
 
     @Override
@@ -34,10 +35,10 @@ public class BingoItemsScreen extends BaseOwoScreen<FlowLayout> {
 
         updateItemList();
 
-        TextBoxComponent searchFieldComponent = Components.textBox(Sizing.fixed(250))
+        TextBoxComponent searchFieldComponent = UIComponents.textBox(Sizing.fixed(250))
                 .text(BingoPossibleItemsList.getFilter());
 
-        searchFieldComponent.setPlaceholder(Text.of("Search..."));
+//        searchFieldComponent.setPlaceholder(Component.literal("Search...")); //TODO: Check?
 
         searchFieldComponent.onChanged().subscribe((text) -> {
             BingoPossibleItemsList.setFilter(text);
@@ -45,17 +46,17 @@ public class BingoItemsScreen extends BaseOwoScreen<FlowLayout> {
         });
 
         rootComponent.child(
-                Components.label(Text.translatable("screen.jimmytools.bingoitems.title"))
+                UIComponents.label(Component.translatable("screen.jimmytools.bingoitems.title"))
         ).child(
                 searchFieldComponent
         ).child(
-                Containers.verticalScroll(Sizing.fixed(340), Sizing.fixed(200), bingoPossibleItemsContainer)
+                UIContainers.verticalScroll(Sizing.fixed(340), Sizing.fixed(200), bingoPossibleItemsContainer)
                         .scrollbar(ScrollContainer.Scrollbar.vanillaFlat())
                         .scrollbarThiccness(5)
                         .scrollStep(25)
         ).child(
-                Components.button(Text.of("Cards"), buttonComponent -> {
-                    ScreenHandler.displayScreen(Screen.BINGO_CARDS_SCREEN, client);
+                UIComponents.button(Component.literal("Cards"), buttonComponent -> {
+                    ScreenHandler.displayScreen(Screen.BINGO_CARDS_SCREEN, Minecraft.getInstance());
                 })
         );
     }
@@ -64,13 +65,13 @@ public class BingoItemsScreen extends BaseOwoScreen<FlowLayout> {
         bingoPossibleItemsContainer.clearChildren();
 
         for (BingoItem item : BingoPossibleItemsList.getListOfPossibleItems()) {
-            FlowLayout bingoPossibleItemElement = (FlowLayout) Containers.horizontalFlow(Sizing.fixed(500), Sizing.fixed(25))
+            FlowLayout bingoPossibleItemElement = (FlowLayout) UIContainers.horizontalFlow(Sizing.fixed(500), Sizing.fixed(25))
                     .verticalAlignment(VerticalAlignment.CENTER);
             bingoPossibleItemElement.child(
-                    Components.item(item.getItem())
+                    UIComponents.item(item.getItem())
                             .margins(Insets.of(2))
             ).child(
-                    Components.label(Text.of(item.getName()))
+                    UIComponents.label(Component.literal(item.getName()))
                             .margins(Insets.of(2))
             );
             bingoPossibleItemsContainer.child(bingoPossibleItemElement);

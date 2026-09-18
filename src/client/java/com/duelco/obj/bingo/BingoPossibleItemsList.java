@@ -1,7 +1,5 @@
 package com.duelco.obj.bingo;
 
-import io.wispforest.owo.ui.core.Component;
-
 import java.util.*;
 
 public class BingoPossibleItemsList {

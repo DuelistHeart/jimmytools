@@ -1,26 +1,26 @@
 package com.duelco.handlers;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.screen.slot.SlotActionType;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.world.inventory.ClickAction;
 
 public class BagHandler {
-    public static void clickCraftingSlot(MinecraftClient client, int craftingGridSlotIndex) {
+    public static void clickCraftingSlot(Minecraft client, int craftingGridSlotIndex) {
         // Ensure the client has the player's inventory open
-        if (client.currentScreen instanceof InventoryScreen inventoryScreen) {
+        if (client.gui.screen() instanceof InventoryScreen inventoryScreen) {
             // Get the slot ID for the crafting grid
             int slotId = craftingGridSlotIndex + 1; // Adjust for slot index offset
 
             // Simulate the click
-            client.interactionManager.clickSlot(
-                    inventoryScreen.getScreenHandler().syncId, // Inventory sync ID
-                    slotId,                                   // Slot ID to click
-                    0,                                        // Mouse button (0 = left, 1 = right)
-                    SlotActionType.PICKUP,                   // Action type (PICKUP simulates a normal click)
-                    client.player                            // Player entity
-            );
+            if (client.gameMode != null) {
+                client.gameMode.handleInventoryButtonClick(
+                        inventoryScreen.getMenu().containerId, // Inventory container ID
+                        InputConstants.MOUSE_BUTTON_LEFT
+                );
 
-            System.out.println("Clicked crafting grid slot: " + craftingGridSlotIndex);
+                System.out.println("Clicked crafting grid slot: " + craftingGridSlotIndex);
+            }
         }
     }
 }

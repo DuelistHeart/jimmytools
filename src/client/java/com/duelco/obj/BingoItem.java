@@ -1,9 +1,9 @@
 package com.duelco.obj;
 
 import com.duelco.handlers.ItemHandler;
-import net.minecraft.component.*;
-import net.minecraft.component.type.CustomModelDataComponent;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomModelData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +34,9 @@ public class BingoItem {
         // Setting customModelDataNumList to a list, because ofcourse it needs to be a list ꓷ:
         List<Float> customModelDataNumList = new ArrayList<>();
         customModelDataNumList.add((float) customModelDataNum);
-        CustomModelDataComponent ItemComponents= new CustomModelDataComponent(customModelDataNumList,new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
+        CustomModelData ItemComponents = new CustomModelData(customModelDataNumList,new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
         ItemStack item = ItemHandler.getItemFromString(baseItem);
-        item.set(DataComponentTypes.CUSTOM_MODEL_DATA, ItemComponents);
+        item.set(DataComponents.CUSTOM_MODEL_DATA, ItemComponents);
         return item;
     }
 

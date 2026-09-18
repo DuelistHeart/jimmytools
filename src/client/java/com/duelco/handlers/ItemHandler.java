@@ -1,8 +1,7 @@
 package com.duelco.handlers;
 
-import com.duelco.obj.BingoItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class ItemHandler {
     public static ItemStack getItemFromString(String itemName) {
@@ -10,35 +9,35 @@ public class ItemHandler {
         // Please support the defaultstacks listed in the init() method in BingoPossibleItemsList.java
         switch (itemName) {
             case "Apple":
-                return Items.APPLE.getDefaultStack();
+                return Items.APPLE.getDefaultInstance();
             case "Rabbit Foot":
-                return Items.RABBIT_FOOT.getDefaultStack();
+                return Items.RABBIT_FOOT.getDefaultInstance();
             case "Bone":
-                return Items.BONE.getDefaultStack();
+                return Items.BONE.getDefaultInstance();
             case "Potion":
-                return Items.POTION.getDefaultStack();
+                return Items.POTION.getDefaultInstance();
             case "Rotten Flesh":
-                return Items.ROTTEN_FLESH.getDefaultStack();
+                return Items.ROTTEN_FLESH.getDefaultInstance();
             case "Filled Map":
-                return Items.FILLED_MAP.getDefaultStack();
+                return Items.FILLED_MAP.getDefaultInstance();
             case "Wooden Shovel":
-                return Items.WOODEN_SHOVEL.getDefaultStack();
+                return Items.WOODEN_SHOVEL.getDefaultInstance();
             case "Cherry Sapling":
-                return Items.CHERRY_SAPLING.getDefaultStack();
+                return Items.CHERRY_SAPLING.getDefaultInstance();
             case "Music Disc Cat":
-                return Items.MUSIC_DISC_CAT.getDefaultStack();
+                return Items.MUSIC_DISC_CAT.getDefaultInstance();
             case "Paper":
-                return Items.PAPER.getDefaultStack();
+                return Items.PAPER.getDefaultInstance();
             case "Fishing Rod":
-                return Items.FISHING_ROD.getDefaultStack();
+                return Items.FISHING_ROD.getDefaultInstance();
             case "Warped Fungus on a Stick":
-                return Items.WARPED_FUNGUS_ON_A_STICK.getDefaultStack();
+                return Items.WARPED_FUNGUS_ON_A_STICK.getDefaultInstance();
             case "Iron Pickaxe":
-                return Items.IRON_PICKAXE.getDefaultStack();
+                return Items.IRON_PICKAXE.getDefaultInstance();
             case "Glass Bottle":
-                return Items.GLASS_BOTTLE.getDefaultStack();
+                return Items.GLASS_BOTTLE.getDefaultInstance();
             default:
-                return Items.AIR.getDefaultStack();
+                return Items.AIR.getDefaultInstance();
         }
 
     }

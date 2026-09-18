@@ -2,15 +2,16 @@ package com.duelco.handlers;
 
 import com.duelco.config.ModConfig;
 import com.duelco.managers.TransformationHelperManager;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.PlayerListEntry;
+import com.mojang.authlib.GameProfile;
+import net.minecraft.client.Minecraft;
+import net.minecraft.server.players.PlayerList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TransformationHelperHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("handlers.TransformationHelper");
-    private static final MinecraftClient client = MinecraftClient.getInstance();
+    private static final Minecraft client = Minecraft.getInstance();
     private static final TransformationHelperManager transformationHelperManager = new TransformationHelperManager();
 
     public static void execute() {
@@ -23,7 +24,7 @@ public class TransformationHelperHandler {
 
             if (newSkin != null) {
                 LOGGER.debug("The new player skin is {}", newSkin);
-                client.player.networkHandler.sendChatCommand("skin " + newSkin);
+                client.player.connection.sendCommand("skin " + newSkin);
                 LOGGER.debug("The command is /skin {}", newSkin);
                 ModConfig.HANDLER.save();
             }
@@ -34,10 +35,7 @@ public class TransformationHelperHandler {
 
     private static String getPlayerSkin() {
         if (client.player != null) {
-            PlayerListEntry playerEntry = client.player.networkHandler.getPlayerListEntry(client.player.getGameProfile().getId());
-            if (playerEntry != null) {
-                return playerEntry.getSkinTextures().textureUrl();
-            }
+            return client.player.getSkin().body().toString();
         }
         return null;
     }

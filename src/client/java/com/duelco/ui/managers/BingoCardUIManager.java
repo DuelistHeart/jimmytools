@@ -1,23 +1,22 @@
 package com.duelco.ui.managers;
 
-import com.duelco.JimmyToolsClient;
 import com.duelco.config.ModConfig;
 import com.duelco.obj.BingoCard;
-import io.wispforest.owo.ui.component.Components;
-import io.wispforest.owo.ui.container.Containers;
+import io.wispforest.owo.ui.component.UIComponents;
 import io.wispforest.owo.ui.container.GridLayout;
 import io.wispforest.owo.ui.container.StackLayout;
+import io.wispforest.owo.ui.container.UIContainers;
 import io.wispforest.owo.ui.core.*;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 public class BingoCardUIManager {
     public static StackLayout buildBingoCardComponent(BingoCard bingoCard) {
-        StackLayout bingoCardElement = (StackLayout) Containers.stack(Sizing.fixed(132), Sizing.fixed(165))
+        StackLayout bingoCardElement = (StackLayout) UIContainers.stack(Sizing.fixed(132), Sizing.fixed(165))
                 .alignment(HorizontalAlignment.CENTER, VerticalAlignment.BOTTOM);
-        StackLayout bingoGridContainerElement = (StackLayout) Containers.stack(Sizing.fixed(130), Sizing.fixed(130))
+        StackLayout bingoGridContainerElement = (StackLayout) UIContainers.stack(Sizing.fixed(130), Sizing.fixed(130))
                 .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
                 .padding(Insets.of(4));
-        GridLayout bingoGridElement = (GridLayout) Containers.grid(Sizing.fixed(120), Sizing.fixed(120), 5, 5)
+        GridLayout bingoGridElement = (GridLayout) UIContainers.grid(Sizing.fixed(120), Sizing.fixed(120), 5, 5)
                 .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
 
         int fullIndex = 0;
@@ -34,7 +33,7 @@ public class BingoCardUIManager {
         }
 
         bingoGridContainerElement.child(
-                Components.box(Sizing.fill(), Sizing.fill())
+                UIComponents.box(Sizing.fill(), Sizing.fill())
                         .color(Color.ofRgb(ModConfig.bingoGridColor.getRGB()))
                         .fill(true)
         ).child(
@@ -42,14 +41,14 @@ public class BingoCardUIManager {
         );
 
         bingoCardElement.child(
-                Components.box(Sizing.fixed(130), Sizing.fixed(160))
+                UIComponents.box(Sizing.fixed(130), Sizing.fixed(160))
                         .color(Color.ofRgb(ModConfig.bingoBackgroundColor.getRGB()))
                         .fill(true)
         ).child(
-                Components.texture(Identifier.of("jimmytools","ui/bingo_header.png"), 1, 1, 255, 256)
+                UIComponents.texture(Identifier.parse("jimmytools:ui/bingo_header.png"), 1, 1, 255, 256)
                         .sizing(Sizing.fixed(100), Sizing.fixed(20))
                         .positioning(Positioning.relative(50, 10))
-                        .zIndex(200)
+//                        .zIndex(200) TODO: Check
         ).child(
                 bingoGridContainerElement
         );

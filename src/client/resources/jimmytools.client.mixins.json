@@ -3,7 +3,6 @@
   "package": "com.duelco.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ChatMixin",
     "MainMixin",
     "ServerJoinMixin"
   ],
@@ -11,7 +10,7 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "DistrictIdentifierMixin",
+    "SubtitleMixin",
     "TitleMixin"
   ]
 }

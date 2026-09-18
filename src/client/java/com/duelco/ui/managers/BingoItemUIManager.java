@@ -1,36 +1,37 @@
 package com.duelco.ui.managers;
 
 import com.duelco.config.ModConfig;
-import com.duelco.obj.BingoItem;
-import io.wispforest.owo.ui.component.UIComponents;
+import com.duelco.obj.bingo.BingoItem;
+import io.wispforest.owo.ui.component.Components;
+import io.wispforest.owo.ui.container.Containers;
 import io.wispforest.owo.ui.container.StackLayout;
-import io.wispforest.owo.ui.container.UIContainers;
 import io.wispforest.owo.ui.core.*;
-import net.minecraft.resources.Identifier;
+import net.minecraft.util.Identifier;
 
 public class BingoItemUIManager {
 
     public static StackLayout buildItemSlot(BingoItem bingoItem) {
-        StackLayout sampleSlot = (StackLayout) UIContainers.stack(Sizing.fixed(24), Sizing.fixed(24))
+        StackLayout sampleSlot = (StackLayout) Containers.stack(Sizing.fixed(20), Sizing.fixed(20))
                 .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
                 .padding(Insets.of(2));
 
         sampleSlot.child(
-                UIComponents.box(Sizing.fill(), Sizing.fill())
+                Components.box(Sizing.fill(), Sizing.fill())
                         .fill(true)
                         .color(Color.ofRgb(ModConfig.bingoBackgroundColor.getRGB()))
         );
 
         if (bingoItem.isFreeSpace()) {
             sampleSlot.child(
-                    UIComponents.texture(Identifier.parse("jimmytools:ui/free_space.png"), 1, 1, 256, 256)
-                            .sizing(Sizing.fixed(20))
-//                            .zIndex(500)
+                    Components.texture(Identifier.of("jimmytools", "ui/free_space.png"), 1, 1, 256, 256)
+                            .sizing(Sizing.fixed(12))
+                            .zIndex(500)
             );
         } else {
             sampleSlot.child(
-                    UIComponents.item(bingoItem.getItem())
-//                            .zIndex(25) TODO: Check
+                    Components.item(bingoItem.getItem())
+                            .sizing(Sizing.fixed(12))
+                            .zIndex(25)
             );
         }
 

@@ -1,10 +1,13 @@
-package com.duelco.obj;
+package com.duelco.obj.bingo;
+
+import io.wispforest.owo.ui.core.Component;
 
 import java.util.*;
 
 public class BingoPossibleItemsList {
     private static final ArrayList<BingoItem> items = new ArrayList<>();
     private static final int MAX_CARD_SIZE = 25;
+    private static String filter;
 
     public static void init(List<BingoItem> bingoItems) {
         items.clear();
@@ -34,6 +37,18 @@ public class BingoPossibleItemsList {
     public static List<BingoItem> getListOfPossibleItems() {
         items.sort(Comparator.comparing(BingoItem::getName));
 
-        return items;
+        if (filter != null) {
+            return items.stream().filter(item -> item.getName().toLowerCase().contains(filter.toLowerCase())).toList();
+        } else {
+            return items;
+        }
+    }
+
+    public static void setFilter(String filter) {
+        BingoPossibleItemsList.filter = filter;
+    }
+
+    public static String getFilter() {
+        return filter;
     }
 }

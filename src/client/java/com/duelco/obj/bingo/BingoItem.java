@@ -1,4 +1,4 @@
-package com.duelco.obj;
+package com.duelco.obj.bingo;
 
 import com.duelco.handlers.ItemHandler;
 import net.minecraft.core.component.DataComponents;

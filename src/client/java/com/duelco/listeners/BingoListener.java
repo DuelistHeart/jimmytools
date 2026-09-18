@@ -1,6 +1,6 @@
-package com.duelco.managers;
-import com.duelco.obj.BingoItem;
-import com.duelco.obj.BingoPossibleItemsList;
+package com.duelco.listeners;
+import com.duelco.obj.bingo.BingoItem;
+import com.duelco.obj.bingo.BingoPossibleItemsList;
 import com.google.gson.*;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resources.Identifier;

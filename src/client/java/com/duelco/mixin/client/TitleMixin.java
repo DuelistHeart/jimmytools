@@ -1,11 +1,12 @@
 package com.duelco.mixin.client;
 
 import com.duelco.config.ModConfig;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.SubtitleOverlay;
-import net.minecraft.network.chat.Component;
+import com.duelco.handlers.PlayerMessagerHandler;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Final;
@@ -22,7 +23,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Mixin(SubtitleOverlay.class)
+@Mixin(SubtitleS2CPacket.class)
 public class TitleMixin {
     @Unique
     private static final Logger LOGGER = LoggerFactory.getLogger("title-mixin");
@@ -31,24 +32,19 @@ public class TitleMixin {
     private static final List<String> pastLvlUpMessages = new ArrayList<>();
 
     @Final
-    @Shadow
-    private List<?> subtitles;
+    @Shadow private Text text;
+    @Inject(at = @At("HEAD"), method = "apply(Lnet/minecraft/network/listener/ClientPlayPacketListener;)V")
+    private void onTitle(ClientPlayPacketListener clientPlayPacketListener, CallbackInfo ci) {
 
-    @Inject(at = @At("HEAD"), method = "extractRenderState")
-    private void onTitle(final GuiGraphicsExtractor graphics, CallbackInfo ci) {
-
-        if (ModConfig.areLevelUpMessagesEnabled && !this.subtitles.isEmpty()) {
-            Object latest = this.subtitles.get(this.subtitles.size() - 1);
-            Component text = ((SubtitleAccessor) latest).jimmytools$getComponent();
-
+        if (ModConfig.areLevelUpMessagesEnabled) {
             LOGGER.debug("receiving title: {}", text);
-            Minecraft client = Minecraft.getInstance();
+            MinecraftClient client = MinecraftClient.getInstance();
 
-            Component lvlUpMsg = this.getLevelUpMessage(text.getString());
+            Text lvlUpMsg = this.getLevelUpMessage(text.getString());
 
             if (client.player != null) {
                 if (lvlUpMsg != null && !Objects.equals(lvlUpMsg.getString(), "[]") && !pastLvlUpMessages.contains(lvlUpMsg.getString())) {
-                    client.player.sendSystemMessage(lvlUpMsg);
+                    PlayerMessagerHandler.sendMessage(lvlUpMsg);
                     pastLvlUpMessages.add(lvlUpMsg.getString());
                 }
             }
@@ -56,7 +52,7 @@ public class TitleMixin {
     }
 
     @Unique
-    private Component getLevelUpMessage(String lvlUpMsg) {
+    private Text getLevelUpMessage(String lvlUpMsg) {
         // Define a regex pattern to match the input string and capture the desired parts
         String regex = "Your (\\w+) Level has increased to (\\d+)!!!";
 
@@ -73,20 +69,16 @@ public class TitleMixin {
             String level = matcher.group(2);
 
             // Print the extracted parts
-            Component activityText = Component.literal(activity).withStyle(ChatFormatting.AQUA);
+            Text activityText = Text.literal(activity).formatted(Formatting.AQUA);
             LOGGER.debug("Activity: " + activity);
-            Component levelText = Component.literal(level).withStyle(ChatFormatting.AQUA);
+            Text levelText = Text.literal(level).formatted(Formatting.AQUA);
             LOGGER.debug("Level: " + level);
 
-            return Component.literal("")
-                    .append(Component.literal("[").withStyle(ChatFormatting.GREEN))
-                    .append(Component.literal("JimmyTools").withStyle(ChatFormatting.GRAY))
-                    .append(Component.literal("] ").withStyle(ChatFormatting.GREEN))
-                    .append("Your ")
+            return Text.literal("Your ")
                     .append(activityText)
                     .append(" Level has increased to ")
                     .append(levelText)
-                    .append("!!!").withStyle(ChatFormatting.GOLD);
+                    .append("!!!").formatted(Formatting.GOLD);
         } else {
             LOGGER.debug("Subtitle was not a level up notification.");
             return null;

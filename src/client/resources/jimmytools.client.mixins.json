@@ -3,14 +3,16 @@
   "package": "com.duelco.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "ChatMixin",
     "MainMixin",
-    "ServerJoinMixin"
+    "PlayerListHudMixin",
+    "ServerJoinMixin",
+    "TabListMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "mixins": [
-    "SubtitleMixin",
     "TitleMixin"
   ]
 }

@@ -8,3 +8,6 @@ pluginManagement {
 		gradlePluginPortal()
 	}
 }
+include 'src:client:test'
+findProject(':src:client:test')?.name = 'test'
+

@@ -7,6 +7,7 @@ import com.duelco.handlers.CharacterMappingHandler;
 import com.duelco.handlers.TransformationHelperHandler;
 import com.duelco.managers.CharacterMapperManager;
 import com.duelco.managers.DataManager;
+import com.duelco.managers.StartupCmdManager;
 import com.duelco.ui.hud.tab.CharacterTabList;
 import com.duelco.ui.hud.tab.DistrictTabList;
 import com.duelco.ui.hud.tab.PlayerTabList;
@@ -86,6 +87,7 @@ public class JimmyToolsClient implements ClientModInitializer {
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			districtTabList.tick();
+			StartupCmdManager.tick();
 			if (client.getConnection() != null) {
 				// Also refreshes the nearby characters in CharacterMapperManager
 				playerListEntries = CharacterMappingHandler.updateFromTabList(client.getConnection());

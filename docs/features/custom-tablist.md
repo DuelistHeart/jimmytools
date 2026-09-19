@@ -3,6 +3,9 @@
 A scroll-styled replacement for the vanilla tab list. It is **off by default**; turn it on under
 *Config → CustomTab → Enable Custom Tablist*.
 
+It only applies when you are connected to `lords.rawb.tv`; on any other server, or in singleplayer, you get the
+vanilla tab list.
+
 Hold the Player List key (++tab++ by default) to unroll the scrolls:
 
 * **Server** (green) – online players, with the server's player count, TPS and your ping.

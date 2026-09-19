@@ -14,6 +14,7 @@ import com.duelco.ui.hud.tab.PlayerTabList;
 import com.duelco.ui.hud.tab.TabListRenderer;
 import com.duelco.ui.screen.ScreenHandler;
 import com.duelco.util.RenderUtils;
+import com.duelco.util.ServerUtils;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -91,7 +92,7 @@ public class JimmyToolsClient implements ClientModInitializer {
 			if (client.getConnection() != null) {
 				// Only the custom tab list reads this, and only while it is open. The last snapshot is kept
 				// for the close animation, so skip the (sort + regex per entry) rebuild otherwise.
-				if (ModConfig.isCustomTablistEnabled && client.options.keyPlayerList.isDown()) {
+				if (ModConfig.isCustomTablistEnabled && client.options.keyPlayerList.isDown() && ServerUtils.isLordsServer()) {
 					// Also refreshes the nearby characters in CharacterMapperManager
 					playerListEntries = CharacterMappingHandler.updateFromTabList(client.getConnection());
 				}

@@ -2,6 +2,7 @@ package com.duelco.mixin.client;
 
 import com.duelco.config.ModConfig;
 import com.duelco.managers.StartupCmdManager;
+import com.duelco.util.ServerUtils;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -21,7 +22,7 @@ public class ServerJoinMixin {
                 // Retrieve the network connection
                 ClientPacketListener connection = client.player.connection;
 
-                if (connection != null && connection.getServerData() != null && connection.getServerData().ip.startsWith("lords.rawb.tv")) {
+                if (ServerUtils.isLordsServer(connection)) {
                     StartupCmdManager.queueNamesCmd();
                 }
             }

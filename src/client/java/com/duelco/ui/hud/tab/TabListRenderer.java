@@ -1,6 +1,7 @@
 package com.duelco.ui.hud.tab;
 
 import com.duelco.config.ModConfig;
+import com.duelco.util.ServerUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.PlayerFaceExtractor;
@@ -130,7 +131,7 @@ public abstract class TabListRenderer<T> {
 
     public void render(GuiGraphicsExtractor context) {
         boolean scrollsVisible = animatedHeight > 0;
-        if (!ModConfig.isCustomTablistEnabled || client == null || client.player == null || client.getConnection() == null) {
+        if (!ModConfig.isCustomTablistEnabled || client == null || client.player == null || !ServerUtils.isLordsServer()) {
             return;
         }
 

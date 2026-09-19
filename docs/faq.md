@@ -7,7 +7,7 @@ No. The only commands it sends are the ones you trigger (`/skin`, from the trans
 
 ## The custom tab list isn't showing
 
-Make sure *Enable Custom Tablist* is on under *CustomTab* in the config, and that you are holding the Player List key.
+Make sure *Enable Custom Tablist* is on under *CustomTab* in the config, and that you are holding the Player List key. The custom tab list is only used on `lords.rawb.tv`.
 
 ## The tab list is cut off or too small
 

@@ -89,8 +89,12 @@ public class JimmyToolsClient implements ClientModInitializer {
 			districtTabList.tick();
 			StartupCmdManager.tick();
 			if (client.getConnection() != null) {
-				// Also refreshes the nearby characters in CharacterMapperManager
-				playerListEntries = CharacterMappingHandler.updateFromTabList(client.getConnection());
+				// Only the custom tab list reads this, and only while it is open. The last snapshot is kept
+				// for the close animation, so skip the (sort + regex per entry) rebuild otherwise.
+				if (ModConfig.isCustomTablistEnabled && client.options.keyPlayerList.isDown()) {
+					// Also refreshes the nearby characters in CharacterMapperManager
+					playerListEntries = CharacterMappingHandler.updateFromTabList(client.getConnection());
+				}
 			} else {
 				playerListEntries = new ArrayList<>();
 				CharacterMapperManager.setMappings(new ArrayList<>());

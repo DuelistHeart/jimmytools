@@ -3,19 +3,6 @@
 Open the config screen with the **Open JimmyTools Config** key (++m++ by default) or through Mod Menu.
 Settings are saved when the game closes.
 
-## Bingo
-
-| Option | Default | Description |
-|---|---|---|
-| Background Color | `#e2d5c4` | Background color of the bingo card. |
-| Grid Color | `#d59989` | Grid color of the bingo card. |
-| Max Cards | 3 | The most cards that can be generated (1–50). |
-| Show Bingo Card Numbers | off | Shows the card number on each card. |
-| Enable Marker Place Sound | on | Sound when placing a marker. |
-| Enable Marker Remove Sound | on | Sound when removing a marker. |
-| Enable Card Clear Sound | on | Sound when clearing cards. |
-| Enable Card Generate Sound | on | Sound when generating cards. |
-
 ## ChatUtils
 
 | Option | Default | Description |

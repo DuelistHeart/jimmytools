@@ -5,7 +5,6 @@ All keybinds are under the **JimmyTools** category in *Options → Controls → 
 | Action | Default key |
 |---|---|
 | Open JimmyTools Config | ++m++ |
-| Open Bingo Screen | ++b++ |
 | Transform Skin | ++k++ |
 | Open Bag (Red) | ++arrow-up++ |
 | Open Bag (Blue) | ++arrow-right++ |

@@ -4,16 +4,9 @@
   "jimmytools.config.startupcommands.namesoptions.names_char": "/names character",
   "key.category.minecraft.jimmytools": "JimmyTools",
   "keybinds.key.jimmytools.transform": "Transform Skin",
-  "keybinds.key.jimmytools.bingo_screen": "Open Bingo Screen",
   "keybinds.key.jimmytools.modmenu": "Open JimmyTools Config",
   "keybinds.key.jimmytools.openbagone": "Open Bag (Red)",
   "keybinds.key.jimmytools.openbagtwo": "Open Bag (Blue) ",
   "keybinds.key.jimmytools.openbagthree": "Open Bag (Green)",
-  "keybinds.key.jimmytools.openbagofholding": "Open Bag Of Holding",
-  "screen.jimmytools.bingo.title": "Bingo Screen",
-  "screen.jimmytools.bingoitems.title": "Bingo Items",
-  "buttons.jimmytools.bingo.clear_marks": "Clear Marks",
-  "buttons.jimmytools.bingo.generate_cards": "Generate Cards",
-  "buttons.jimmytools.bingo.reset": "Reset",
-  "buttons.jimmytools.bingo.item_list": "Item List"
+  "keybinds.key.jimmytools.openbagofholding": "Open Bag Of Holding"
 }

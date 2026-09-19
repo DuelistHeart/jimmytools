@@ -45,7 +45,6 @@ nav:
       - Keybinds: keybinds.md
       - Configuration: configuration.md
   - Features:
-      - Bingo: features/bingo.md
       - Bag Hotkeys: features/bag-hotkeys.md
       - Transformations: features/transformations.md
       - Custom Tab List: features/custom-tablist.md

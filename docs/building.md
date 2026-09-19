@@ -1,6 +1,6 @@
 # Building from Source
 
-Requires JDK 21 or newer.
+Requires JDK 25 or newer.
 
 ```bash
 git clone https://github.com/DuelistHeart/jimmytools.git

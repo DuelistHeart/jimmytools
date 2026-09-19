@@ -1,6 +1,5 @@
 package com.duelco.mixin.client;
 import com.duelco.config.ModConfig;
-import com.duelco.handlers.FeatureFlagHandler;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.PlayerTabOverlay;
 import net.minecraft.world.scores.Objective;
@@ -15,6 +14,6 @@ public class PlayerListHudMixin {
 
     @Inject(method = "extractRenderState", at = @At("HEAD"), cancellable = true)
     private void disableDefaultTab(GuiGraphicsExtractor context, int scaledWindowWidth, Scoreboard scoreboard, Objective objective, CallbackInfo ci) {
-        if(ModConfig.isCustomTablistEnabled && FeatureFlagHandler.isCustomTablistEnabled()) ci.cancel();
+        if(ModConfig.isCustomTablistEnabled) ci.cancel();
     }
 }

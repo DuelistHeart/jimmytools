@@ -93,51 +93,49 @@ public class JimmyToolsClient implements ClientModInitializer {
 			}
 		});
 
-		if (FeatureFlagHandler.isCustomTablistEnabled()) {
-			ClientTickEvents.END_CLIENT_TICK.register(client -> {
-				if (client.getConnection() != null) {
-					// Also refreshes the nearby characters in CharacterMapperManager
-					playerListEntries = CharacterMappingHandler.updateFromTabList(client.getConnection());
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			if (client.getConnection() != null) {
+				// Also refreshes the nearby characters in CharacterMapperManager
+				playerListEntries = CharacterMappingHandler.updateFromTabList(client.getConnection());
+			} else {
+				playerListEntries = new ArrayList<>();
+				CharacterMapperManager.setMappings(new ArrayList<>());
+			}
+
+			if (DataManager.getDataStore().getTabData().getPlotInfo() != null) {
+				ArrayList<Component> districtLines = new ArrayList<>();
+				String district = DataManager.getDataStore().getTabData().getPlotInfo().getDistrict();
+				districtTabList.setDistrictName(district); // shown in the scroll's header
+				String plotOwner = DataManager.getDataStore().getTabData().getPlotInfo().getOwner() == null
+						? "Unowned"
+						: "Owned By " + DataManager.getDataStore().getTabData().getPlotInfo().getOwner();
+				String plotName = DataManager.getDataStore().getTabData().getPlotInfo().getPlot();
+
+				if (plotName != null) {
+					districtLines.add(Component.literal(plotName));
+					districtLines.add(Component.literal(plotOwner).withStyle(ChatFormatting.DARK_GRAY).withStyle(ChatFormatting.ITALIC).withoutShadow());
 				} else {
-					playerListEntries = new ArrayList<>();
-					CharacterMapperManager.setMappings(new ArrayList<>());
+					districtLines.add(Component.literal("Public Lands"));
 				}
+				districtTabList.setData(districtLines);
+			} else {
+				districtTabList.setData(new ArrayList<>());
+			}
 
-				if (DataManager.getDataStore().getTabData().getPlotInfo() != null) {
-					ArrayList<Component> districtLines = new ArrayList<>();
-					String district = DataManager.getDataStore().getTabData().getPlotInfo().getDistrict();
-					districtTabList.setDistrictName(district); // shown in the scroll's header
-					String plotOwner = DataManager.getDataStore().getTabData().getPlotInfo().getOwner() == null
-							? "Unowned"
-							: "Owned By " + DataManager.getDataStore().getTabData().getPlotInfo().getOwner();
-					String plotName = DataManager.getDataStore().getTabData().getPlotInfo().getPlot();
+			playerTabList.setData(playerListEntries);
+			characterTabList.setData(CharacterMapperManager.getPlayers());
+		});
 
-					if (plotName != null) {
-						districtLines.add(Component.literal(plotName));
-						districtLines.add(Component.literal(plotOwner).withStyle(ChatFormatting.DARK_GRAY).withStyle(ChatFormatting.ITALIC).withoutShadow());
-					} else {
-						districtLines.add(Component.literal("Public Lands"));
-					}
-					districtTabList.setData(districtLines);
-				} else {
-					districtTabList.setData(new ArrayList<>());
-				}
-
-				playerTabList.setData(playerListEntries);
-				characterTabList.setData(CharacterMapperManager.getPlayers());
+		// Register event to render our custom tab list
+		HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("jimmytools", "custom_tab_list"), (drawContext, deltaTracker) -> {
+			TabListRenderer.updateLayout();
+			float scale = TabListRenderer.getLayoutScale();
+			RenderUtils.drawWithScale(drawContext, scale, scale, scale, () -> {
+				playerTabList.render(drawContext);
+				characterTabList.render(drawContext);
+				districtTabList.render(drawContext);
 			});
-
-			// Register event to render our custom tab list
-			HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("jimmytools", "custom_tab_list"), (drawContext, deltaTracker) -> {
-				TabListRenderer.updateLayout();
-				float scale = TabListRenderer.getLayoutScale();
-				RenderUtils.drawWithScale(drawContext, scale, scale, scale, () -> {
-					playerTabList.render(drawContext);
-					characterTabList.render(drawContext);
-					districtTabList.render(drawContext);
-				});
-			});
-		}
+		});
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
 			ModConfig.HANDLER.save();

@@ -29,7 +29,7 @@ public class PlayerTabList extends TabListRenderer<PlayerInfo> {
     @Override
     Component getHeaderText() {
         return Component.literal("Server").withStyle(style -> style.withColor(CommonColors.GREEN)).append(Component.literal(" (" +
-                DataManager.getDataStore().getTabData().getCurrentServerPlayerCount() + "/" +
+                DataManager.getDataStore().getTabData().getCurrentServerPlayerCount() + " | " +
                 DataManager.getDataStore().getTabData().getTotalPlayerCount() + ")").withStyle(style -> style.withColor(CommonColors.WHITE)))
                 .append(Component.literal("  TPS: ").withStyle(style -> style.withColor(CommonColors.LIGHT_GRAY))
                         .append(Component.literal(String.valueOf(DataManager.getDataStore().getTabData().getTps()))

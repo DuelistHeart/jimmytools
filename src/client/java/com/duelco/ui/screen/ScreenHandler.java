@@ -8,8 +8,6 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 public class ScreenHandler {
     public static void displayScreen(Screen screen, Minecraft client) {
         switch (screen) {
-            case BINGO_CARDS_SCREEN -> client.gui.setScreen(new BingoScreen());
-            case BINGO_ITEMS_SCREEN -> client.gui.setScreen(new BingoItemsScreen());
             case INVENTORY_SCREEN -> client.gui.setScreen(new InventoryScreen(client.player));
             case CONFIG_SCREEN -> client.gui.setScreen(ModConfig.build().generateScreen(client.gui.screen()));
         }

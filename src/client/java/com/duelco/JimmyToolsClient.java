@@ -4,9 +4,7 @@ import com.duelco._enum.Screen;
 import com.duelco.config.ModConfig;
 import com.duelco.handlers.BagHandler;
 import com.duelco.handlers.CharacterMappingHandler;
-import com.duelco.handlers.FeatureFlagHandler;
 import com.duelco.handlers.TransformationHelperHandler;
-import com.duelco.listeners.BingoListener;
 import com.duelco.managers.CharacterMapperManager;
 import com.duelco.managers.DataManager;
 import com.duelco.ui.hud.tab.CharacterTabList;
@@ -21,12 +19,10 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +31,6 @@ import java.util.*;
 
 public class JimmyToolsClient implements ClientModInitializer {
 	private static KeyMapping transformationToggleKeybind;
-	private static KeyMapping bingoScreenKeybind;
 	private static KeyMapping modMenuKeybind;
 	private static KeyMapping bagOneKeybind;
 	private static KeyMapping bagTwoKeybind;
@@ -54,7 +49,6 @@ public class JimmyToolsClient implements ClientModInitializer {
 		ModConfig.HANDLER.load();
 		registerKeybinds();
 		DataManager.loadData();
-//		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new BingoListener());
 
 		playerTabList = new PlayerTabList("player_tab_list");
 		characterTabList = new CharacterTabList("character_tab_list");
@@ -65,9 +59,6 @@ public class JimmyToolsClient implements ClientModInitializer {
 				if (ModConfig.areTransformationsEnabled) {
 					TransformationHelperHandler.execute();
 				}
-			}
-			while (bingoScreenKeybind.consumeClick()) {
-				ScreenHandler.displayScreen(Screen.BINGO_CARDS_SCREEN, client);
 			}
 			while (bagOneKeybind.consumeClick()) {
 				ScreenHandler.displayScreen(Screen.INVENTORY_SCREEN, client);
@@ -150,13 +141,6 @@ public class JimmyToolsClient implements ClientModInitializer {
 				InputConstants.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
 				InputConstants.KEY_K, // The keycode of the key
 				jimmyToolsCategory // The translation key of the keybinding's category.
-		));
-
-		bingoScreenKeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-				"keybinds.key.jimmytools.bingo_screen",
-				InputConstants.Type.KEYSYM,
-				InputConstants.KEY_B,
-				jimmyToolsCategory
 		));
 
 		modMenuKeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(

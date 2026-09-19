@@ -25,23 +25,6 @@ public class ModConfig {
                     .build();
 
     @SerialEntry
-    public static int bingoMaxCards = 3;
-    @SerialEntry
-    public static boolean isDisplayBingoNumsEnabled = true;
-    @SerialEntry
-    public static Color bingoBackgroundColor = Color.decode("#e2d5c4");
-    @SerialEntry
-    public static Color bingoGridColor = Color.decode("#d59989");
-    @SerialEntry
-    public static boolean isBingoMarkerPlaceSoundEnabled = true;
-    @SerialEntry
-    public static boolean isBingoMarkerRemoveSoundEnabled = true;
-    @SerialEntry
-    public static boolean isBingoCardClearSoundEnabled = true;
-    @SerialEntry
-    public static boolean isBingoCardGenerateSoundEnabled = true;
-
-    @SerialEntry
     public static boolean isCustomTablistEnabled = false;
     @SerialEntry
     public static float openScrollSpeed = 3.0f;
@@ -68,74 +51,6 @@ public class ModConfig {
         YetAnotherConfigLib.Builder config =  YetAnotherConfigLib.createBuilder()
                 .title(Component.literal("JimmyTools Config"))
                 .category(ConfigCategory.createBuilder()
-                        .name(Component.literal("Bingo"))
-                        .tooltip(Component.literal("Bingo config"))
-                        .group(OptionGroup.createBuilder()
-                                .name(Component.literal("Color Options"))
-                                .description(OptionDescription.of(Component.literal("Color options for Bingo cards")))
-                                .option(Option.<Color>createBuilder()
-                                        .name(Component.literal("Background Color"))
-                                        .description(OptionDescription.of(Component.literal("Background color of the bingo card.")))
-                                        .binding(Color.decode("#e2d5c4"), () -> bingoBackgroundColor, newVal -> bingoBackgroundColor = newVal)
-                                        .controller(ColorControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Color>createBuilder()
-                                        .name(Component.literal("Grid Color"))
-                                        .description(OptionDescription.of(Component.literal("Grid color of the bingo card.")))
-                                        .binding(Color.decode("#d59989"), () -> bingoGridColor, newVal -> bingoGridColor = newVal)
-                                        .controller(ColorControllerBuilder::create)
-                                        .build())
-                                .build())
-                        .group(OptionGroup.createBuilder()
-                                .name(Component.literal("Generation Options"))
-                                .description(OptionDescription.of(Component.literal("Generation options for Bingo cards")))
-                                .option(Option.<Integer>createBuilder()
-                                        .name(Component.literal("Max Cards"))
-                                        .description(OptionDescription.of(Component.literal("The max amount of cards that can be generated.")))
-                                        .binding(3, () -> bingoMaxCards, newVal -> bingoMaxCards = newVal)
-                                        .controller(integerOption -> IntegerSliderControllerBuilder.create(integerOption)
-                                                .range(1, 50)
-                                                .step(1)
-                                                .formatValue(val -> Component.literal(val + " Card(s)")))
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Component.literal("Show Bingo Card Numbers"))
-                                        .description(OptionDescription.of(Component.literal("Displays the Bingo Card # on the bingo cards.")))
-                                        .binding(false, () -> isDisplayBingoNumsEnabled, newVal -> isDisplayBingoNumsEnabled = newVal)
-                                        .controller(BooleanControllerBuilder::create)
-                                        .build())
-                                .build())
-                        .group(OptionGroup.createBuilder()
-                                .name(Component.literal("Sound Options"))
-                                .description(OptionDescription.of(Component.literal("Sound options for Bingo cards")))
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Component.literal("Enable Marker Place Sound"))
-                                        .description(OptionDescription.of(Component.literal("Determines if a sound plays when placing Bingo markers.")))
-                                        .binding(true, () -> isBingoMarkerPlaceSoundEnabled, newVal -> isBingoMarkerPlaceSoundEnabled = newVal)
-                                        .controller(BooleanControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Component.literal("Enable Marker Remove Sound"))
-                                        .description(OptionDescription.of(Component.literal("Determines if a sound plays when removing Bingo markers.")))
-                                        .binding(true, () -> isBingoMarkerRemoveSoundEnabled, newVal -> isBingoMarkerRemoveSoundEnabled = newVal)
-                                        .controller(BooleanControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Component.literal("Enable Card Clear Sound"))
-                                        .description(OptionDescription.of(Component.literal("Determines if a sound plays when clearing Bingo cards.")))
-                                        .binding(true, () -> isBingoCardClearSoundEnabled, newVal -> isBingoCardClearSoundEnabled = newVal)
-                                        .controller(BooleanControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Component.literal("Enable Card Generate Sound"))
-                                        .description(OptionDescription.of(Component.literal("Determines if a sound plays when generating Bingo cards.")))
-                                        .binding(true, () -> isBingoCardGenerateSoundEnabled, newVal -> isBingoCardGenerateSoundEnabled = newVal)
-                                        .controller(BooleanControllerBuilder::create)
-                                        .build())
-                                .build())
-                        .build());
-
-        config.category(ConfigCategory.createBuilder()
                         .name(Component.literal("ChatUtils"))
                         .tooltip(Component.literal("ChatUtils config"))
                         .group(OptionGroup.createBuilder()

@@ -48,7 +48,6 @@ public class DataManager {
 
             Gson gson = new Gson();
             dataStore = gson.fromJson(json, DataStore.class);
-            dataStore.unloadData();
             // Process the JSON as needed
             System.out.println("[JimmyTools] Loaded JSON: " + json);
         } catch (IOException e) {

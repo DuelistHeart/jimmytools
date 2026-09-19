@@ -1,64 +1,75 @@
 package com.duelco.handlers;
 
 import com.duelco.managers.CharacterMapperManager;
+import com.duelco.mixin.client.PlayerTabOverlayAccessor;
 import com.duelco.obj.general.Player;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.resources.Identifier;
+import net.minecraft.network.chat.Component;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
+/**
+ * Splits the server's tab list into its sections. The server lays the list out in vanilla order as:
+ * <pre>
+ *   Server   (fake entry)  -> online players (columns 1 and 2, padded with blank entries)
+ *   Nearby   (fake entry)  -> characters near the local player (column 3)
+ * </pre>
+ */
 public class CharacterMappingHandler {
-    private static final Minecraft client = Minecraft.getInstance();
+    private static final int MAX_TAB_ENTRIES = 80; // vanilla's own cap
+    private static final Set<String> SERVER_MARKERS = Set.of("server", "build server");
+    private static final String NEARBY_MARKER = "nearby";
 
-    public static void mapNearbyPlayers() {
-        List<Player> mappedPlayers = new ArrayList<>();
-        Collection<PlayerInfo> players = client.getConnection().getOnlinePlayers();
+    private enum Section {NONE, SERVER, NEARBY}
 
-        List<PlayerInfo> nearbyPlayerEntries = players.stream().toList().stream().filter(entry -> {
-            if (entry.getTabListDisplayName() != null) {
-                return entry.getTabListDisplayName().getSiblings().size() == 2;
-            } else {
-                return false;
+    /**
+     * Re-reads the tab list, stores the nearby characters in {@link CharacterMapperManager}
+     * and returns the online players.
+     */
+    public static List<PlayerInfo> updateFromTabList(ClientPacketListener connection) {
+        List<PlayerInfo> serverPlayers = new ArrayList<>();
+        List<Player> characters = new ArrayList<>();
+        Section section = Section.NONE;
+
+        List<PlayerInfo> entries = connection.getListedOnlinePlayers().stream()
+                .sorted(PlayerTabOverlayAccessor.getPlayerComparator())
+                .limit(MAX_TAB_ENTRIES)
+                .toList();
+
+        for (PlayerInfo entry : entries) {
+            String name = getDisplayName(entry);
+            if (name.isEmpty()) continue; // blank padding entries
+
+            String key = name.toLowerCase(Locale.ROOT);
+            if (SERVER_MARKERS.contains(key)) {
+                section = Section.SERVER;
+            } else if (key.equals(NEARBY_MARKER)) {
+                section = Section.NEARBY;
+            } else if (section == Section.SERVER) {
+                serverPlayers.add(entry);
+            } else if (section == Section.NEARBY) {
+                characters.add(new Player(entry.getProfile().name(), name, entry.getSkin().body().texturePath()));
             }
-        }).toList();
-
-        List<net.minecraft.world.entity.player.Player> nearbyPlayers = getNearbyPlayers(client.player, nearbyPlayerEntries.size());
-
-        // Loop through the player list and draw custom tab names
-        for (int i = 0; i < nearbyPlayers.size(); i++) {
-            PlayerInfo playerEntry = nearbyPlayerEntries.get(i);
-            net.minecraft.world.entity.player.Player playerEntity = nearbyPlayers.get(i);
-
-            // Get the player's skin texture
-            Identifier skinTexture = ((AbstractClientPlayer) playerEntity).getSkin().body().texturePath();
-
-            Player player = new Player(playerEntity.getName().getString(),
-                    playerEntry.getTabListDisplayName().getSiblings().get(1).getString(), skinTexture);
-
-            mappedPlayers.add(player);
         }
 
-        CharacterMapperManager.setMappings(mappedPlayers);
+        CharacterMapperManager.setMappings(characters);
+        return serverPlayers;
     }
 
-    public static List<net.minecraft.world.entity.player.Player> getNearbyPlayers(net.minecraft.world.entity.player.Player player, int count) {
-        if (player == null || !(player.level() instanceof ClientLevel level)) {
-            return List.of();
-        }
+    /**
+     * The name the tab list shows for this entry, without the leading colour/status glyph.
+     * Real entries are laid out as [glyph, name]; the name is always the last sibling.
+     */
+    public static String getDisplayName(PlayerInfo entry) {
+        Component display = entry.getTabListDisplayName();
+        if (display == null) return "";
 
-        Set<String> seenNames = new LinkedHashSet<>();
-
-        return level.players().stream()
-                .sorted(Comparator.comparing((AbstractClientPlayer p) -> p.distanceToSqr(player)))
-                .filter(p -> seenNames.add(p.getName().getString())) // Only add if name is not already in the set
-                .limit(count)
-                .sorted(Comparator.comparing((AbstractClientPlayer p) -> p.getName().getString()))
-                .<net.minecraft.world.entity.player.Player>map(p -> p)
-                .collect(Collectors.toList());
-
+        List<Component> siblings = display.getSiblings();
+        String raw = siblings.isEmpty() ? display.getString() : siblings.get(siblings.size() - 1).getString();
+        return raw.replaceFirst("^[^\\p{L}\\p{N}_]+", "").trim();
     }
 }

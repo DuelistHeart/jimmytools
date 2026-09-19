@@ -3,6 +3,7 @@ package com.duelco;
 import com.duelco._enum.Screen;
 import com.duelco.config.ModConfig;
 import com.duelco.handlers.BagHandler;
+import com.duelco.handlers.CharacterMappingHandler;
 import com.duelco.handlers.FeatureFlagHandler;
 import com.duelco.handlers.TransformationHelperHandler;
 import com.duelco.listeners.BingoListener;
@@ -11,6 +12,7 @@ import com.duelco.managers.DataManager;
 import com.duelco.ui.hud.tab.CharacterTabList;
 import com.duelco.ui.hud.tab.DistrictTabList;
 import com.duelco.ui.hud.tab.PlayerTabList;
+import com.duelco.ui.hud.tab.TabListRenderer;
 import com.duelco.ui.screen.ScreenHandler;
 import com.duelco.util.RenderUtils;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -92,11 +94,11 @@ public class JimmyToolsClient implements ClientModInitializer {
 		if (FeatureFlagHandler.isCustomTablistEnabled()) {
 			ClientTickEvents.END_CLIENT_TICK.register(client -> {
 				if (client.getConnection() != null) {
-					playerListEntries = client.getConnection().getOnlinePlayers().stream().filter(entry -> {
-						return entry.getTabListDisplayName() != null && !entry.getTabListDisplayName().getString().isEmpty()
-								&& entry.getTabListDisplayName().getSiblings().size() == 1
-								&& !List.of("Nearby", "Build Server", "Server").contains(entry.getTabListDisplayName().getString());
-					}).toList();
+					// Also refreshes the nearby characters in CharacterMapperManager
+					playerListEntries = CharacterMappingHandler.updateFromTabList(client.getConnection());
+				} else {
+					playerListEntries = new ArrayList<>();
+					CharacterMapperManager.setMappings(new ArrayList<>());
 				}
 
 				if (DataManager.getDataStore().getTabData().getPlotInfo() != null) {
@@ -124,7 +126,9 @@ public class JimmyToolsClient implements ClientModInitializer {
 
 			// Register event to render our custom tab list
 			HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("jimmytools", "custom_tab_list"), (drawContext, deltaTracker) -> {
-				RenderUtils.drawWithScale(drawContext, 0.95f, 0.95f, 0.95f, () -> {
+				TabListRenderer.updateLayout();
+				float scale = TabListRenderer.getLayoutScale();
+				RenderUtils.drawWithScale(drawContext, scale, scale, scale, () -> {
 					playerTabList.render(drawContext);
 					characterTabList.render(drawContext);
 					districtTabList.render(drawContext);

@@ -36,7 +36,7 @@ public class JimmyToolsClient implements ClientModInitializer {
 	private static KeyMapping bagOneKeybind;
 	private static KeyMapping bagTwoKeybind;
 	private static KeyMapping bagThreeKeybind;
-	private static KeyMapping bagFourKeybind;
+	private static KeyMapping bagOfHoldingKeybind;
 	private static PlayerTabList playerTabList;
 	private static CharacterTabList characterTabList;
 	private static DistrictTabList districtTabList;
@@ -77,7 +77,7 @@ public class JimmyToolsClient implements ClientModInitializer {
 				ScreenHandler.displayScreen(Screen.INVENTORY_SCREEN, client);
 				BagHandler.clickCraftingSlot(client, 2);
 			}
-			while (bagFourKeybind.isDown()) {
+			while (bagOfHoldingKeybind.isDown()) {
 				ScreenHandler.displayScreen(Screen.INVENTORY_SCREEN, client);
 				BagHandler.clickCraftingSlot(client, 3);
 			}
@@ -138,7 +138,7 @@ public class JimmyToolsClient implements ClientModInitializer {
 	}
 
 	private void registerKeybinds() {
-		KeyMapping.Category jimmyToolsCategory = KeyMapping.Category.register(Identifier.parse("jimmytools:category.jimmytools"));
+		KeyMapping.Category jimmyToolsCategory = KeyMapping.Category.register(Identifier.parse("jimmytools"));
 
 		transformationToggleKeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"keybinds.key.jimmytools.transform", // The translation key of the keybinding's name
@@ -182,8 +182,8 @@ public class JimmyToolsClient implements ClientModInitializer {
 				jimmyToolsCategory
 		));
 
-		bagFourKeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-				"keybinds.key.jimmytools.openbagfour",
+		bagOfHoldingKeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+				"keybinds.key.jimmytools.openbagofholding",
 				InputConstants.Type.KEYSYM,
 				InputConstants.KEY_LEFT,
 				jimmyToolsCategory

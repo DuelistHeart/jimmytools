@@ -10,7 +10,7 @@ public class DistrictTabList extends TabListRenderer<String> {
 
     public DistrictTabList(String id) {
         super(id);
-        this.scrollTexture = Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_nearby_top.png");
+        this.scrollTexture = Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_roll_nearby.png");
         setColumns(1, 190);
         tabHeight = DISTRICT_HEIGHT;
     }
@@ -43,6 +43,6 @@ public class DistrictTabList extends TabListRenderer<String> {
     void setPosition() {
         // Centered below the player and character scrolls
         this.x = centeredLeft(tabWidth);
-        this.y = listTop() + (ROWS * lineHeight) + padding + (2 * GAP);
+        this.y = listTop() + LIST_HEIGHT + (2 * GAP);
     }
 }

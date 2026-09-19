@@ -16,14 +16,24 @@ public abstract class TabListRenderer<T> {
     protected static final Minecraft client = Minecraft.getInstance();
     protected static final int ROWS = 14; // matches the rows-per-column of the server's tab list
     protected static final int GAP = 20;  // half the space between neighbouring scrolls
-    protected static final int ENTRY_OFFSET = 4;
+    protected static final int ENTRY_OFFSET = 7; // inset of the first row below the top roll (and of the last above the bottom one)
     protected static final int HEAD_SIZE = 8;
 
     private static final int LINE_HEIGHT = 10;
-    private static final int PADDING = 5;
+    private static final int PADDING = 8;
+    protected static final int LIST_HEIGHT = (2 * ENTRY_OFFSET) + (ROWS * LINE_HEIGHT);
     private static final int PLAYER_WIDTH = (2 * 110) + (2 * PADDING);    // two columns, see PlayerTabList
     private static final int CHARACTER_WIDTH = 120 + (2 * PADDING);       // one column, see CharacterTabList
-    protected static final int DISTRICT_HEIGHT = 40;
+    protected static final int DISTRICT_HEIGHT = 44;
+
+    // scroll_roll_*.png is [left cap | stretchable middle | right cap]; parchment_grain.png tiles over the background
+    private static final int ROLL_CAP = 10;
+    private static final int ROLL_MID = 4;
+    private static final int ROLL_HEIGHT = 12;
+    private static final int GRAIN_SIZE = 32;
+    private static final Identifier GRAIN_TEXTURE = Identifier.fromNamespaceAndPath("jimmytools", "ui/parchment_grain.png");
+    private static final int EDGE_SHADOW = 0x3B2410;
+    private static final int[] EDGE_ALPHAS = {0x38, 0x22, 0x10};
 
     private static final float MAX_SCALE = 0.95f;
     private static final int SCREEN_MARGIN = 8;
@@ -47,7 +57,7 @@ public abstract class TabListRenderer<T> {
     protected int columns = 1;
     protected int columnWidth = 120;
     protected int tabWidth = columnWidth + (2 * padding);
-    protected int tabHeight = (ROWS * lineHeight) + padding;
+    protected int tabHeight = LIST_HEIGHT;
     protected Identifier scrollTexture;
 
     private String id;
@@ -82,10 +92,9 @@ public abstract class TabListRenderer<T> {
         int screenWidth = client.getWindow().getGuiScaledWidth();
         int screenHeight = client.getWindow().getGuiScaledHeight();
 
-        int listHeight = (ROWS * LINE_HEIGHT) + PADDING;
         // The scroll rolls stick out by a tenth of the width on each side
         int contentWidth = PLAYER_WIDTH + (2 * GAP) + CHARACTER_WIDTH + (PLAYER_WIDTH / 10) + (CHARACTER_WIDTH / 10);
-        int contentHeight = HEADER_SPACE + listHeight + (2 * GAP) + DISTRICT_HEIGHT + FOOTER_SPACE;
+        int contentHeight = HEADER_SPACE + LIST_HEIGHT + (2 * GAP) + DISTRICT_HEIGHT + FOOTER_SPACE;
 
         float availableWidth = screenWidth - (2 * SCREEN_MARGIN);
         float availableHeight = screenHeight - SCREEN_MARGIN - HOTBAR_CLEARANCE;
@@ -137,8 +146,7 @@ public abstract class TabListRenderer<T> {
             animatedHeight = Math.max(animatedHeight, 0); // Ensure it doesn't go negative
         }
 
-        // Render a background for the custom tab list
-        context.fillGradient(x, y, x + tabWidth, y + animatedHeight, 0xFFF8DCC2, 0xFFAB9179);
+        drawParchment(context);
 
         // Loop through the data and draw the entries
         if (data != null) {
@@ -152,9 +160,43 @@ public abstract class TabListRenderer<T> {
         }
     }
 
+    private void drawParchment(GuiGraphicsExtractor context) {
+        if (animatedHeight <= 0) return;
+        int bottom = y + animatedHeight;
+        context.fillGradient(x, y, x + tabWidth, bottom, 0xFFFCEBD9, 0xFFCDB8A1);
+
+        // Paper grain, tiled and clipped to the part of the scroll that is currently unrolled
+        for (int ty = y; ty < bottom; ty += GRAIN_SIZE) {
+            int h = Math.min(GRAIN_SIZE, bottom - ty);
+            for (int tx = x; tx < x + tabWidth; tx += GRAIN_SIZE) {
+                int w = Math.min(GRAIN_SIZE, x + tabWidth - tx);
+                context.blit(RenderPipelines.GUI_TEXTURED, GRAIN_TEXTURE, tx, ty, 0, 0, w, h, GRAIN_SIZE, GRAIN_SIZE);
+            }
+        }
+
+        // Soft shading where the paper curls into the rolls and at the sides
+        for (int i = 0; i < EDGE_ALPHAS.length; i++) {
+            int shade = (EDGE_ALPHAS[i] << 24) | EDGE_SHADOW;
+            context.fill(x + i, y, x + i + 1, bottom, shade);
+            context.fill(x + tabWidth - 1 - i, y, x + tabWidth - i, bottom, shade);
+            context.fill(x, y + i, x + tabWidth, y + i + 1, shade);
+            context.fill(x, bottom - 1 - i, x + tabWidth, bottom - i, shade);
+        }
+    }
+
     private void drawScrolls(GuiGraphicsExtractor context) {
-        context.blit(RenderPipelines.GUI_TEXTURED, scrollTexture, x-(tabWidth/10), y-8, 0, 0, tabWidth + (tabWidth/5), 12, tabWidth + (tabWidth/5), 12);
-        context.blit(RenderPipelines.GUI_TEXTURED, scrollTexture, x-(tabWidth/10), y+animatedHeight, 0, 0, tabWidth + (tabWidth/5), 12, tabWidth + (tabWidth/5), 12);
+        int rollX = x - (tabWidth / 10);
+        int rollWidth = tabWidth + (tabWidth / 5);
+        drawRoll(context, rollX, y - 8, rollWidth);
+        drawRoll(context, rollX, y + animatedHeight, rollWidth);
+    }
+
+    /** Draws a wooden roll: end caps at native size with the middle stretched between them. */
+    private void drawRoll(GuiGraphicsExtractor context, int rollX, int rollY, int width) {
+        int textureWidth = (2 * ROLL_CAP) + ROLL_MID;
+        context.blit(RenderPipelines.GUI_TEXTURED, scrollTexture, rollX, rollY, 0, 0, ROLL_CAP, ROLL_HEIGHT, textureWidth, ROLL_HEIGHT);
+        context.blit(RenderPipelines.GUI_TEXTURED, scrollTexture, rollX + ROLL_CAP, rollY, ROLL_CAP, 0, width - (2 * ROLL_CAP), ROLL_HEIGHT, ROLL_MID, ROLL_HEIGHT, textureWidth, ROLL_HEIGHT);
+        context.blit(RenderPipelines.GUI_TEXTURED, scrollTexture, rollX + width - ROLL_CAP, rollY, ROLL_CAP + ROLL_MID, 0, ROLL_CAP, ROLL_HEIGHT, textureWidth, ROLL_HEIGHT);
     }
 
     private void drawCentered(GuiGraphicsExtractor context, Component text, int textY) {

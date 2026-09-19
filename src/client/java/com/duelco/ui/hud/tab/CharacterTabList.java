@@ -11,7 +11,7 @@ public class CharacterTabList extends TabListRenderer<Player> {
 
     public CharacterTabList(String id) {
         super(id);
-        this.scrollTexture = Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_nearby_top.png");
+        this.scrollTexture = Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_roll_nearby.png");
         setColumns(1, 120); // the server's third tab section
     }
 

@@ -18,7 +18,7 @@ public class PlayerTabList extends TabListRenderer<PlayerInfo> {
     public PlayerTabList(String id) {
         super(id);
         setColumns(2, 110); // the server's first two tab sections
-        this.scrollTexture = Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_online_top.png");
+        this.scrollTexture = Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_roll_online.png");
     }
 
     void setPosition() {

@@ -1,17 +1,19 @@
 {
   "required": true,
   "package": "com.duelco.mixin.client",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "client": [
     "ChatMixin",
     "MainMixin",
-    "ServerJoinMixin"
+    "PlayerListHudMixin",
+    "PlayerTabOverlayAccessor",
+    "ServerJoinMixin",
+    "TabListMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "mixins": [
-    "DistrictIdentifierMixin",
     "TitleMixin"
   ]
 }

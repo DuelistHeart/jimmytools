@@ -1,11 +1,10 @@
 package com.duelco.managers;
 
-import com.duelco.obj.BingoCard;
-import com.duelco.obj.DataStore;
+import com.duelco.obj.data.DataStore;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 import java.io.File;
 import java.io.FileReader;
@@ -15,7 +14,7 @@ import java.nio.file.Path;
 
 public class DataManager {
     private static DataStore dataStore;
-    private static File gameDir = MinecraftClient.getInstance().runDirectory;
+    private static File gameDir = Minecraft.getInstance().gameDirectory;
 
     public static void saveData() {
         File path = new File(gameDir, "jimmyData/datastore.json");
@@ -49,7 +48,6 @@ public class DataManager {
 
             Gson gson = new Gson();
             dataStore = gson.fromJson(json, DataStore.class);
-            dataStore.unloadData();
             // Process the JSON as needed
             System.out.println("[JimmyTools] Loaded JSON: " + json);
         } catch (IOException e) {

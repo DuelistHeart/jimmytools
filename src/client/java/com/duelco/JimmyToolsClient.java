@@ -85,6 +85,7 @@ public class JimmyToolsClient implements ClientModInitializer {
 		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			districtTabList.tick();
 			if (client.getConnection() != null) {
 				// Also refreshes the nearby characters in CharacterMapperManager
 				playerListEntries = CharacterMappingHandler.updateFromTabList(client.getConnection());

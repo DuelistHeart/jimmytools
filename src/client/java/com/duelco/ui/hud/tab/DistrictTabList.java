@@ -1,21 +1,33 @@
 package com.duelco.ui.hud.tab;
 
 import com.duelco._enum.District;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.CommonColors;
 import net.minecraft.resources.Identifier;
 
 import java.util.Objects;
 
 public class DistrictTabList extends TabListRenderer<Component> {
+    private static final int FOOTER_SWAP_TICKS = 10; // 20 client ticks per second
+    private static final Component[] FOOTERS = {
+            Component.literal("Powered by the ").append(Component.literal("rawb.tv").withStyle(ChatFormatting.AQUA)).append(Component.literal(" Commmunity!")),
+            Component.literal("Powered by the ").append(Component.literal("rawb.tv").withStyle(ChatFormatting.LIGHT_PURPLE)).append(Component.literal(" Commmunity!")),
+    };
+
     private String districtName;
+    private int tickCount;
 
     public DistrictTabList(String id) {
         super(id);
         this.scrollTexture = Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_roll_nearby.png");
         setColumns(1, 190);
         tabHeight = DISTRICT_HEIGHT;
+    }
+
+    /** Advances the footer rotation; call once per client tick. */
+    public void tick() {
+        tickCount++;
     }
 
     public void setDistrictName(String districtName) {
@@ -61,7 +73,7 @@ public class DistrictTabList extends TabListRenderer<Component> {
 
     @Override
     Component getFooterText() {
-        return Component.literal("Powered by the rawb.tv commmunity!");
+        return FOOTERS[(tickCount / FOOTER_SWAP_TICKS) % FOOTERS.length];
     }
 
     @Override

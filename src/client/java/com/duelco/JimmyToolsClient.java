@@ -57,34 +57,34 @@ public class JimmyToolsClient implements ClientModInitializer {
 		districtTabList = new DistrictTabList("district_tab_list");
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			while (transformationToggleKeybind.isDown()) {
+			while (transformationToggleKeybind.consumeClick()) {
 				if (ModConfig.areTransformationsEnabled) {
 					TransformationHelperHandler.execute();
 				}
 			}
-			while (bingoScreenKeybind.isDown()) {
+			while (bingoScreenKeybind.consumeClick()) {
 				ScreenHandler.displayScreen(Screen.BINGO_CARDS_SCREEN, client);
 			}
-			while (bagOneKeybind.isDown()) {
+			while (bagOneKeybind.consumeClick()) {
 				ScreenHandler.displayScreen(Screen.INVENTORY_SCREEN, client);
 				BagHandler.clickCraftingSlot(client, 0);
 			}
-			while (bagTwoKeybind.isDown()) {
+			while (bagTwoKeybind.consumeClick()) {
 				ScreenHandler.displayScreen(Screen.INVENTORY_SCREEN, client);
 				BagHandler.clickCraftingSlot(client, 1);
 			}
-			while (bagThreeKeybind.isDown()) {
+			while (bagThreeKeybind.consumeClick()) {
 				ScreenHandler.displayScreen(Screen.INVENTORY_SCREEN, client);
 				BagHandler.clickCraftingSlot(client, 2);
 			}
-			while (bagOfHoldingKeybind.isDown()) {
+			while (bagOfHoldingKeybind.consumeClick()) {
 				ScreenHandler.displayScreen(Screen.INVENTORY_SCREEN, client);
 				BagHandler.clickCraftingSlot(client, 3);
 			}
 		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			while (modMenuKeybind.isDown()) {
+			while (modMenuKeybind.consumeClick()) {
 				ScreenHandler.displayScreen(Screen.CONFIG_SCREEN, client);
 			}
 		});

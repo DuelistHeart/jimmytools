@@ -2,7 +2,7 @@
   "jimmytools.config.startupcommands.namesoptions.names_off": "/names off",
   "jimmytools.config.startupcommands.namesoptions.names_on": "/names on",
   "jimmytools.config.startupcommands.namesoptions.names_char": "/names character",
-  "keybinds.category.jimmytools": "JimmyTools",
+  "key.category.minecraft.jimmytools": "JimmyTools",
   "keybinds.key.jimmytools.transform": "Transform Skin",
   "keybinds.key.jimmytools.bingo_screen": "Open Bingo Screen",
   "keybinds.key.jimmytools.modmenu": "Open JimmyTools Config",

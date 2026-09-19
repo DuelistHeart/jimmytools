@@ -6,6 +6,7 @@ import com.duelco.obj.general.Transformation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.core.ClientAsset;
 import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,10 @@ public class TransformationHelperHandler {
                     .findFirst()
                     .orElse(null);
             if (playerEntry != null) {
-                return playerEntry.getSkin().body().texturePath().getPath(); // TODO: Check this.
+                // body() is declared as ClientAsset.Texture; only downloaded skins carry a URL.
+                if (playerEntry.getSkin().body() instanceof ClientAsset.DownloadedTexture downloaded) {
+                    return downloaded.url();
+                }
             }
         }
         return null;

@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 public class KeybindUtils {
     public static KeyMapping getKeybind(String keybindName) {
         for (KeyMapping keyBinding : Minecraft.getInstance().options.keyMappings) {
-            if (keyBinding.getTranslatedKeyMessage().getString().equals(keybindName)) {
+            if (keyBinding.getName().equals(keybindName)) {
                 return keyBinding;
             }
         }

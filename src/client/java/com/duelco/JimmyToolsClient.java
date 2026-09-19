@@ -22,8 +22,10 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
@@ -102,20 +104,21 @@ public class JimmyToolsClient implements ClientModInitializer {
 				}
 
 				if (DataManager.getDataStore().getTabData().getPlotInfo() != null) {
-					ArrayList<String> testData = new ArrayList<>();
+					ArrayList<Component> districtLines = new ArrayList<>();
 					String district = DataManager.getDataStore().getTabData().getPlotInfo().getDistrict();
-					districtTabList.setDistrictName(district);
-					testData.add("District: " + district);
+					districtTabList.setDistrictName(district); // shown in the scroll's header
 					String plotOwner = DataManager.getDataStore().getTabData().getPlotInfo().getOwner() == null
 							? "Unowned"
-							: DataManager.getDataStore().getTabData().getPlotInfo().getOwner();
+							: "Owned By " + DataManager.getDataStore().getTabData().getPlotInfo().getOwner();
 					String plotName = DataManager.getDataStore().getTabData().getPlotInfo().getPlot();
 
 					if (plotName != null) {
-						testData.add("Plot: " + plotName);
-						testData.add("Owned by: " + plotOwner);
+						districtLines.add(Component.literal(plotName));
+						districtLines.add(Component.literal(plotOwner).withStyle(ChatFormatting.DARK_GRAY).withStyle(ChatFormatting.ITALIC).withoutShadow());
+					} else {
+						districtLines.add(Component.literal("Public Lands"));
 					}
-					districtTabList.setData(testData);
+					districtTabList.setData(districtLines);
 				} else {
 					districtTabList.setData(new ArrayList<>());
 				}

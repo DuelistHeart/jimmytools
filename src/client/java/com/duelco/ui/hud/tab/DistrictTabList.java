@@ -1,11 +1,14 @@
 package com.duelco.ui.hud.tab;
 
+import com.duelco._enum.District;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.resources.Identifier;
 
-public class DistrictTabList extends TabListRenderer<String> {
+import java.util.Objects;
+
+public class DistrictTabList extends TabListRenderer<Component> {
     private String districtName;
 
     public DistrictTabList(String id) {
@@ -16,7 +19,39 @@ public class DistrictTabList extends TabListRenderer<String> {
     }
 
     public void setDistrictName(String districtName) {
-        this.districtName = districtName;
+        if (!Objects.equals(districtName, this.districtName)) {
+            this.scrollTexture = this.getDistrictScroll(District.fromName(districtName));
+            this.districtName = districtName;
+        }
+    }
+
+    public Identifier getDistrictScroll(District district) {
+        if (district == null) return Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_roll_nearby.png");
+
+        switch (district) {
+            case DWARVEN:
+                return Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_roll_dwarven.png");
+            case MOONBAY:
+                return Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_roll_moonbay.png");
+            case GOATTOWN:
+                return Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_roll_goattown.png");
+            case ROYAL:
+                return Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_roll_royal.png");
+            case SOUTHSHIRE:
+                return Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_roll_southshire.png");
+            case GROVE:
+                return Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_roll_grove.png");
+            case BRICKTON:
+                return Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_roll_brickton.png");
+            case DARKVALE:
+                return Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_roll_darkvale.png");
+            case SLUMS:
+                return Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_roll_slums.png");
+            case STICKY:
+                return Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_roll_sticky.png");
+            default:
+                return Identifier.fromNamespaceAndPath("jimmytools", "ui/scroll_roll_nearby.png");
+        }
     }
 
     @Override
@@ -30,12 +65,13 @@ public class DistrictTabList extends TabListRenderer<String> {
     }
 
     @Override
-    void executeLoop(String datum, GuiGraphicsExtractor context, int i) {
-//        Identifier ANIMATED_TEXTURE = Identifier.fromNamespaceAndPath("jimmytools", "ui/mousedance.png");
-
-        int entryY = y + (i * lineHeight) + ENTRY_OFFSET;
+    void executeLoop(Component datum, GuiGraphicsExtractor context, int i) {
+        // Line 0 is the plot name and line 1 its owner, each centred on the scroll.
+        // The two-line block is centred vertically, so a taller scroll gains space above and below.
+        int blockTop = (tabHeight - (2 * lineHeight)) / 2;
+        int entryY = y + blockTop + (i * lineHeight);
         if (y + animatedHeight > entryY + lineHeight) {
-            context.text(client.font, datum, x + padding, entryY, CommonColors.WHITE, true);
+            drawCentered(context, datum, entryY);
         }
     }
 

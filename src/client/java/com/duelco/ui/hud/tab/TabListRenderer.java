@@ -24,7 +24,7 @@ public abstract class TabListRenderer<T> {
     protected static final int LIST_HEIGHT = (2 * ENTRY_OFFSET) + (ROWS * LINE_HEIGHT);
     private static final int PLAYER_WIDTH = (2 * 110) + (2 * PADDING);    // two columns, see PlayerTabList
     private static final int CHARACTER_WIDTH = 120 + (2 * PADDING);       // one column, see CharacterTabList
-    protected static final int DISTRICT_HEIGHT = 44;
+    protected static final int DISTRICT_HEIGHT = 46; // room for the plot name and owner lines, centred vertically by DistrictTabList
 
     // scroll_roll_*.png is [left cap | stretchable middle | right cap]; parchment_grain.png tiles over the background
     private static final int ROLL_CAP = 10;
@@ -163,7 +163,7 @@ public abstract class TabListRenderer<T> {
     private void drawParchment(GuiGraphicsExtractor context) {
         if (animatedHeight <= 0) return;
         int bottom = y + animatedHeight;
-        context.fillGradient(x, y, x + tabWidth, bottom, 0xFFFCEBD9, 0xFFCDB8A1);
+        context.fillGradient(x, y, x + tabWidth, bottom, 0xFFFADFC2, 0xFFC5AC91);
 
         // Paper grain, tiled and clipped to the part of the scroll that is currently unrolled
         for (int ty = y; ty < bottom; ty += GRAIN_SIZE) {
@@ -199,7 +199,7 @@ public abstract class TabListRenderer<T> {
         context.blit(RenderPipelines.GUI_TEXTURED, scrollTexture, rollX + width - ROLL_CAP, rollY, ROLL_CAP + ROLL_MID, 0, ROLL_CAP, ROLL_HEIGHT, textureWidth, ROLL_HEIGHT);
     }
 
-    private void drawCentered(GuiGraphicsExtractor context, Component text, int textY) {
+    protected void drawCentered(GuiGraphicsExtractor context, Component text, int textY) {
         if (text == null) return;
         // Colour must carry full alpha or the text is not drawn
         context.text(client.font, text, x + (tabWidth - client.font.width(text)) / 2, textY, CommonColors.WHITE, true);

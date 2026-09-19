@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class RegexHandler {
     public static PlotInfo parsePlotInfo(String input) {
-        Pattern pattern = Pattern.compile("^(\\S+) \\(([^)]+)\\) (?:owned by (\\S+)|unowned)$|^(.+)$");
+        Pattern pattern = Pattern.compile("^(\\S+) \\(([^)]+)\\) (?:owned by (.*)|unowned)$|^(.+)$");
         Matcher matcher = pattern.matcher(input);
 
         if (matcher.matches()) {

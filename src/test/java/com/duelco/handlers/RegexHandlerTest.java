@@ -29,5 +29,11 @@ public class RegexHandlerTest {
         assert plotInfo4.getPlot().equals("plot4");
         assert plotInfo4.getDistrict().equals("district4");
         assert plotInfo4.getOwner().equals("__player2");
+
+        PlotInfo plotInfo5 = RegexHandler.parsePlotInfo("berrycharm (Goat Town) owned by DuelistHeart, Silcatian");
+        assert plotInfo5 != null;
+        assert plotInfo5.getPlot().equals("berrycharm");
+        assert plotInfo5.getDistrict().equals("Goat Town");
+        assert plotInfo5.getOwner().equals("DuelistHeart, Silcatian");
     }
 }

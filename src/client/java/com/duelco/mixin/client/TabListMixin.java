@@ -4,11 +4,8 @@ import com.duelco.handlers.FeatureFlagHandler;
 import com.duelco.handlers.RegexHandler;
 import com.duelco.managers.DataManager;
 import com.duelco.obj.general.PlotInfo;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.packet.s2c.play.PlayerListHeaderS2CPacket;
-import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
-import net.minecraft.text.Text;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.protocol.game.ClientboundTabListPacket;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,13 +18,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Mixin(ClientPlayNetworking.class)
+@Mixin(ClientPacketListener.class)
 public class TabListMixin {
 
     @Shadow @Final private static Logger LOGGER;
 
-    @Inject(method = "onPlayerListHeader", at = @At("HEAD"))
-    private void captureTabList(PlayerListHeaderS2CPacket packet, CallbackInfo ci) {
+    @Inject(method = "handleTabListCustomisation", at = @At("HEAD"))
+    private void captureTabList(ClientboundTabListPacket packet, CallbackInfo ci) {
         if (FeatureFlagHandler.isCustomTablistEnabled()) {
             if (packet != null) {
                 // Lords of Minecraft 2\nonline: 4 (24) | tps: 20.0 | ping: 0ms

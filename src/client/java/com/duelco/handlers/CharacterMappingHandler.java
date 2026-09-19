@@ -3,10 +3,10 @@ package com.duelco.handlers;
 import com.duelco.managers.CharacterMapperManager;
 import com.duelco.obj.general.Player;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.resources.Identifier;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,28 +16,28 @@ public class CharacterMappingHandler {
 
     public static void mapNearbyPlayers() {
         List<Player> mappedPlayers = new ArrayList<>();
-        Collection<PlayerListEntry> players = client.getNetworkHandler().getPlayerList();
+        Collection<PlayerInfo> players = client.getConnection().getOnlinePlayers();
 
-        List<PlayerListEntry> nearbyPlayerEntries = players.stream().toList().stream().filter(entry -> {
-            if (entry.getDisplayName() != null) {
-                return entry.getDisplayName().getSiblings().size() == 2;
+        List<PlayerInfo> nearbyPlayerEntries = players.stream().toList().stream().filter(entry -> {
+            if (entry.getTabListDisplayName() != null) {
+                return entry.getTabListDisplayName().getSiblings().size() == 2;
             } else {
                 return false;
             }
         }).toList();
 
-        List<PlayerEntity> nearbyPlayers = getNearbyPlayers(client.player, nearbyPlayerEntries.size());
+        List<net.minecraft.world.entity.player.Player> nearbyPlayers = getNearbyPlayers(client.player, nearbyPlayerEntries.size());
 
         // Loop through the player list and draw custom tab names
         for (int i = 0; i < nearbyPlayers.size(); i++) {
-            PlayerListEntry playerEntry = nearbyPlayerEntries.get(i);
-            PlayerEntity playerEntity = nearbyPlayers.get(i);
+            PlayerInfo playerEntry = nearbyPlayerEntries.get(i);
+            net.minecraft.world.entity.player.Player playerEntity = nearbyPlayers.get(i);
 
             // Get the player's skin texture
-            Identifier skinTexture = ((AbstractClientPlayerEntity) playerEntity).getSkinTextures().texture();
+            Identifier skinTexture = ((AbstractClientPlayer) playerEntity).getSkin().body().texturePath();
 
             Player player = new Player(playerEntity.getName().getString(),
-                    playerEntry.getDisplayName().getSiblings().get(1).getString(), skinTexture);
+                    playerEntry.getTabListDisplayName().getSiblings().get(1).getString(), skinTexture);
 
             mappedPlayers.add(player);
         }
@@ -45,18 +45,19 @@ public class CharacterMappingHandler {
         CharacterMapperManager.setMappings(mappedPlayers);
     }
 
-    public static List<PlayerEntity> getNearbyPlayers(PlayerEntity player, int count) {
-        if (player == null || player.getWorld() == null) {
+    public static List<net.minecraft.world.entity.player.Player> getNearbyPlayers(net.minecraft.world.entity.player.Player player, int count) {
+        if (player == null || !(player.level() instanceof ClientLevel level)) {
             return List.of();
         }
 
         Set<String> seenNames = new LinkedHashSet<>();
 
-        return player.getWorld().getPlayers().stream()
-                .sorted(Comparator.comparing((PlayerEntity p) -> p.squaredDistanceTo(player)))
+        return level.players().stream()
+                .sorted(Comparator.comparing((AbstractClientPlayer p) -> p.distanceToSqr(player)))
                 .filter(p -> seenNames.add(p.getName().getString())) // Only add if name is not already in the set
                 .limit(count)
-                .sorted(Comparator.comparing((PlayerEntity p) -> p.getName().getString()))
+                .sorted(Comparator.comparing((AbstractClientPlayer p) -> p.getName().getString()))
+                .<net.minecraft.world.entity.player.Player>map(p -> p)
                 .collect(Collectors.toList());
 
     }

@@ -2,18 +2,16 @@ package com.duelco.ui.managers;
 
 import com.duelco.config.ModConfig;
 import com.duelco.obj.bingo.BingoItem;
-import io.wispforest.owo.ui.component.Components;
 import io.wispforest.owo.ui.component.UIComponents;
-import io.wispforest.owo.ui.container.Containers;
 import io.wispforest.owo.ui.container.StackLayout;
+import io.wispforest.owo.ui.container.UIContainers;
 import io.wispforest.owo.ui.core.*;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Identifier;
 
 public class BingoItemUIManager {
 
     public static StackLayout buildItemSlot(BingoItem bingoItem) {
-        StackLayout sampleSlot = (StackLayout) UIComponents.stack(Sizing.fixed(20), Sizing.fixed(20))
+        StackLayout sampleSlot = (StackLayout) UIContainers.stack(Sizing.fixed(20), Sizing.fixed(20))
                 .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
                 .padding(Insets.of(2));
 

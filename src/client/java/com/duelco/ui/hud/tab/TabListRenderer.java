@@ -4,13 +4,10 @@ import com.duelco.config.ModConfig;
 import com.duelco.handlers.CharacterMappingHandler;
 import com.duelco.managers.DataManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -45,15 +42,15 @@ public abstract class TabListRenderer<T> {
         this.data = data;
     }
 
-    public void render(DrawContext context) {
+    public void render(GuiGraphicsExtractor context) {
         boolean scrollsVisible = animatedHeight > 0;
-        if (!ModConfig.isCustomTablistEnabled || client == null || client.player == null || client.getNetworkHandler() == null) {
+        if (!ModConfig.isCustomTablistEnabled || client == null || client.player == null || client.getConnection() == null) {
             return;
         }
 
         CharacterMappingHandler.mapNearbyPlayers();
 
-        if (client.options.playerListKey.isPressed()) {
+        if (client.options.keyPlayerList.isDown()) {
             this.setPosition();
 
             // Animate height increase (expands downwards)
@@ -73,18 +70,18 @@ public abstract class TabListRenderer<T> {
 
         if (scrollsVisible) {
             drawScrolls(context);
-            if (getHeaderText() != null) context.drawText(client.textRenderer, getHeaderText(), x + padding, y-6, Colors.WHITE, true);
-            if (getFooterText() != null) context.drawText(client.textRenderer, getFooterText(), x + padding, y + animatedHeight+2, Colors.WHITE, true);
+            if (getHeaderText() != null) context.text(client.font, getHeaderText(), x + padding, y-6, 0xFFFFFF, true);
+            if (getFooterText() != null) context.text(client.font, getFooterText(), x + padding, y + animatedHeight+2, 0xFFFFFF, true);
         }
     }
 
-    private void drawScrolls(DrawContext context) {
-        context.drawTexture(RenderLayer::getGuiTextured, scrollTexture, x-(tabWidth/10), y-8, 0, 0, tabWidth + (tabWidth/5), 12, tabWidth + (tabWidth/5), 12);
-        context.drawTexture(RenderLayer::getGuiTextured, scrollTexture, x-(tabWidth/10), y+animatedHeight, 0, 0, tabWidth + (tabWidth/5), 12, tabWidth + (tabWidth/5), 12);
+    private void drawScrolls(GuiGraphicsExtractor context) {
+        context.blit(RenderPipelines.GUI_TEXTURED, scrollTexture, x-(tabWidth/10), y-8, 0, 0, tabWidth + (tabWidth/5), 12, tabWidth + (tabWidth/5), 12);
+        context.blit(RenderPipelines.GUI_TEXTURED, scrollTexture, x-(tabWidth/10), y+animatedHeight, 0, 0, tabWidth + (tabWidth/5), 12, tabWidth + (tabWidth/5), 12);
     }
 
-    abstract Text getHeaderText();
-    abstract Text getFooterText();
-    abstract void executeLoop(T datum, DrawContext context, int i);
+    abstract Component getHeaderText();
+    abstract Component getFooterText();
+    abstract void executeLoop(T datum, GuiGraphicsExtractor context, int i);
     abstract void setPosition();
 }

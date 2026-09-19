@@ -2,11 +2,12 @@ package com.duelco.mixin.client;
 
 import com.duelco.config.ModConfig;
 import com.duelco.handlers.PlayerMessagerHandler;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Final;
@@ -23,7 +24,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Mixin(SubtitleS2CPacket.class)
+@Mixin(ClientboundSetSubtitleTextPacket.class)
 public class TitleMixin {
     @Unique
     private static final Logger LOGGER = LoggerFactory.getLogger("title-mixin");
@@ -32,15 +33,15 @@ public class TitleMixin {
     private static final List<String> pastLvlUpMessages = new ArrayList<>();
 
     @Final
-    @Shadow private Text text;
-    @Inject(at = @At("HEAD"), method = "apply(Lnet/minecraft/network/listener/ClientPlayPacketListener;)V")
-    private void onTitle(ClientPlayPacketListener clientPlayPacketListener, CallbackInfo ci) {
+    @Shadow private Component text;
+    @Inject(at = @At("HEAD"), method = "handle(Lnet/minecraft/network/protocol/game/ClientGamePacketListener;)V")
+    private void onTitle(ClientGamePacketListener clientGamePacketListener, CallbackInfo ci) {
 
         if (ModConfig.areLevelUpMessagesEnabled) {
             LOGGER.debug("receiving title: {}", text);
-            MinecraftClient client = MinecraftClient.getInstance();
+            Minecraft client = Minecraft.getInstance();
 
-            Text lvlUpMsg = this.getLevelUpMessage(text.getString());
+            MutableComponent lvlUpMsg = this.getLevelUpMessage(text.getString());
 
             if (client.player != null) {
                 if (lvlUpMsg != null && !Objects.equals(lvlUpMsg.getString(), "[]") && !pastLvlUpMessages.contains(lvlUpMsg.getString())) {
@@ -52,7 +53,7 @@ public class TitleMixin {
     }
 
     @Unique
-    private Text getLevelUpMessage(String lvlUpMsg) {
+    private MutableComponent getLevelUpMessage(String lvlUpMsg) {
         // Define a regex pattern to match the input string and capture the desired parts
         String regex = "Your (\\w+) Level has increased to (\\d+)!!!";
 
@@ -69,16 +70,16 @@ public class TitleMixin {
             String level = matcher.group(2);
 
             // Print the extracted parts
-            Text activityText = Text.literal(activity).formatted(Formatting.AQUA);
+            MutableComponent activityText = Component.literal(activity).withStyle(ChatFormatting.AQUA);
             LOGGER.debug("Activity: " + activity);
-            Text levelText = Text.literal(level).formatted(Formatting.AQUA);
+            MutableComponent levelText = Component.literal(level).withStyle(ChatFormatting.AQUA);
             LOGGER.debug("Level: " + level);
 
-            return Text.literal("Your ")
+            return Component.literal("Your ")
                     .append(activityText)
                     .append(" Level has increased to ")
                     .append(levelText)
-                    .append("!!!").formatted(Formatting.GOLD);
+                    .append("!!!").withStyle(ChatFormatting.GOLD);
         } else {
             LOGGER.debug("Subtitle was not a level up notification.");
             return null;

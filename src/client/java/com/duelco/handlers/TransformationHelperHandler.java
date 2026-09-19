@@ -6,9 +6,7 @@ import com.duelco.obj.general.Transformation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +26,7 @@ public class TransformationHelperHandler {
         isSettingUpTransformation = true;
         LOGGER.info("Setting up transformation.");
         ModConfig.regularSkin = getPlayerSkin();
-        PlayerMessagerHandler.sendMessage(Component.literal("Please attempt to transform manually (/skin <url>).").formatted(Formatting.GREEN));
+        PlayerMessagerHandler.sendMessage(Component.literal("Please attempt to transform manually (/skin <url>).").withStyle(ChatFormatting.GREEN));
     }
 
     public static void completeTransformationSetup() {

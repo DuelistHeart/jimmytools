@@ -18,11 +18,11 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.resource.ResourceType;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ public class JimmyToolsClient implements ClientModInitializer {
 	private static CharacterTabList characterTabList;
 	private static DistrictTabList districtTabList;
 
-	private static List<PlayerListEntry> playerListEntries = new ArrayList<>();
+	private static List<PlayerInfo> playerListEntries = new ArrayList<>();
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("jimmytools-client");
 
@@ -50,7 +50,7 @@ public class JimmyToolsClient implements ClientModInitializer {
 		ModConfig.HANDLER.load();
 		registerKeybinds();
 		DataManager.loadData();
-		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new BingoListener());
+//		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new BingoListener());
 
 		playerTabList = new PlayerTabList("player_tab_list");
 		characterTabList = new CharacterTabList("character_tab_list");
@@ -91,11 +91,11 @@ public class JimmyToolsClient implements ClientModInitializer {
 
 		if (FeatureFlagHandler.isCustomTablistEnabled()) {
 			ClientTickEvents.END_CLIENT_TICK.register(client -> {
-				if (client.getNetworkHandler() != null) {
-					playerListEntries = client.getNetworkHandler().getPlayerList().stream().filter(entry -> {
-						return entry.getDisplayName() != null && !entry.getDisplayName().getString().isEmpty()
-								&& entry.getDisplayName().getSiblings().size() == 1
-								&& !List.of("Nearby", "Build Server", "Server").contains(entry.getDisplayName().getString());
+				if (client.getConnection() != null) {
+					playerListEntries = client.getConnection().getOnlinePlayers().stream().filter(entry -> {
+						return entry.getTabListDisplayName() != null && !entry.getTabListDisplayName().getString().isEmpty()
+								&& entry.getTabListDisplayName().getSiblings().size() == 1
+								&& !List.of("Nearby", "Build Server", "Server").contains(entry.getTabListDisplayName().getString());
 					}).toList();
 				}
 
@@ -123,7 +123,7 @@ public class JimmyToolsClient implements ClientModInitializer {
 			});
 
 			// Register event to render our custom tab list
-			HudRenderCallback.EVENT.register((drawContext, renderTickCounter) -> {
+			HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("jimmytools", "custom_tab_list"), (drawContext, deltaTracker) -> {
 				RenderUtils.drawWithScale(drawContext, 0.95f, 0.95f, 0.95f, () -> {
 					playerTabList.render(drawContext);
 					characterTabList.render(drawContext);

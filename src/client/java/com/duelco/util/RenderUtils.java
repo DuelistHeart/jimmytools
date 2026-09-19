@@ -1,14 +1,13 @@
 package com.duelco.util;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Colors;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class RenderUtils {
-    public static void drawWithScale(DrawContext context, float scaleX, float scaleY, float scaleZ, Runnable action) {
-        context.getMatrices().push();
-        context.getMatrices().scale(scaleX, scaleY, scaleZ);
+    public static void drawWithScale(GuiGraphicsExtractor context, float scaleX, float scaleY, float scaleZ, Runnable action) {
+        context.pose().pushMatrix();
+        context.pose().scale(scaleX, scaleY);
         // Draw the player's name next to their head
         action.run();
-        context.getMatrices().pop();
+        context.pose().popMatrix();
     }
 }

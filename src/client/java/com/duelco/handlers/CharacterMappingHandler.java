@@ -9,6 +9,8 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class CharacterMappingHandler {
     private static final int MAX_TAB_ENTRIES = 80; // vanilla's own cap
     private static final Set<String> SERVER_MARKERS = Set.of("server", "build server");
     private static final String NEARBY_MARKER = "nearby";
+    private static final String GLYPH_PREFIX = "^[^\\p{L}\\p{N}_]+"; // everything before the first letter, digit or underscore
 
     private enum Section {NONE, SERVER, NEARBY}
 
@@ -60,7 +63,7 @@ public class CharacterMappingHandler {
                 serverPlayers.add(entry);
                 accountsBySkin.computeIfAbsent(entry.getSkin().body().texturePath(), skin -> new ArrayList<>()).add(name);
             } else if (section == Section.NEARBY) {
-                characters.add(new Player("", name, getCharacterSkin(entry, accountsBySkin)));
+                characters.add(new Player("", name, getDisplayLabel(entry), getCharacterSkin(entry, accountsBySkin)));
             }
         }
 
@@ -132,6 +135,40 @@ public class CharacterMappingHandler {
 
         List<Component> siblings = display.getSiblings();
         String raw = siblings.isEmpty() ? display.getString() : siblings.get(siblings.size() - 1).getString();
-        return raw.replaceFirst("^[^\\p{L}\\p{N}_]+", "").trim();
+        return raw.replaceFirst(GLYPH_PREFIX, "").trim();
+    }
+
+    /**
+     * What the custom tab lists draw for this entry: the leading glyph(s) exactly as the server styled them
+     * (colour, font), followed by the plain name. {@link #getDisplayName} is the same text without the glyphs.
+     */
+    public static Component getDisplayLabel(PlayerInfo entry) {
+        Component display = entry.getTabListDisplayName();
+        if (display == null) return Component.empty();
+
+        List<Component> siblings = display.getSiblings();
+        if (siblings.isEmpty()) return splitGlyph(display, display.getStyle());
+
+        // The root is emptied of its own style so the name doesn't inherit it; each glyph gets it applied instead,
+        // which is what the vanilla renderer would have done through inheritance.
+        MutableComponent label = Component.empty();
+        label.append(display.plainCopy().withStyle(display.getStyle()));
+        for (int i = 0; i < siblings.size() - 1; i++) {
+            Component sibling = siblings.get(i);
+            label.append(sibling.copy().withStyle(sibling.getStyle().applyTo(display.getStyle())));
+        }
+        Component last = siblings.get(siblings.size() - 1);
+        return label.append(splitGlyph(last, last.getStyle().applyTo(display.getStyle())));
+    }
+
+    /** A component whose text may begin with glyph characters: the glyph keeps {@code style}, the name after it is plain. */
+    private static Component splitGlyph(Component component, Style style) {
+        String raw = component.getString();
+        String name = raw.replaceFirst(GLYPH_PREFIX, "").stripTrailing();
+        String glyph = raw.substring(0, raw.length() - raw.replaceFirst(GLYPH_PREFIX, "").length());
+
+        MutableComponent result = Component.empty();
+        if (!glyph.isEmpty()) result.append(Component.literal(glyph).withStyle(style));
+        return result.append(Component.literal(name));
     }
 }

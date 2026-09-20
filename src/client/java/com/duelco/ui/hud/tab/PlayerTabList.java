@@ -48,6 +48,6 @@ public class PlayerTabList extends TabListRenderer<PlayerInfo> {
 
     @Override
     void executeLoop(PlayerInfo datum, GuiGraphicsExtractor context, int i) {
-        drawEntry(context, datum.getSkin().body().texturePath(), CharacterMappingHandler.getDisplayName(datum), i);
+        drawEntry(context, datum.getSkin().body().texturePath(), CharacterMappingHandler.getDisplayLabel(datum), i);
     }
 }

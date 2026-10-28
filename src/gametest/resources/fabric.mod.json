@@ -1,0 +1,16 @@
+{
+	"schemaVersion": 1,
+	"id": "jimmytools-gametest",
+	"version": "1.0.0",
+	"name": "JimmyTools Game Tests",
+	"environment": "client",
+	"entrypoints": {
+		"fabric-client-gametest": [
+			"com.duelco.gametest.CharacterSelectRecording"
+		]
+	},
+	"depends": {
+		"jimmytools": "*",
+		"fabric-client-gametest-api-v1": "*"
+	}
+}

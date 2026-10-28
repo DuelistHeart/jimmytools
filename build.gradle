@@ -45,6 +45,16 @@ loom {
 
 }
 
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = "jimmytools-gametest"
+		enableGameTests = false
+		enableClientGameTests = true
+		eula = true
+	}
+}
+
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"

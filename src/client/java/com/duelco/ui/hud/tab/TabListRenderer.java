@@ -7,6 +7,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.PlayerFaceExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import net.minecraft.locale.Language;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 
@@ -210,7 +211,7 @@ public abstract class TabListRenderer<T> {
      * Draws one head + name entry in the grid slot for index {@code i}, filling column by column.
      * Entries that don't fit the grid, or aren't yet revealed by the scroll animation, are skipped.
      */
-    protected void drawEntry(GuiGraphicsExtractor context, Identifier skin, String name, int i) {
+    protected void drawEntry(GuiGraphicsExtractor context, Identifier skin, Component label, int i) {
         int column = i / ROWS;
         int row = i % ROWS;
         if (column >= columns) return;
@@ -221,7 +222,7 @@ public abstract class TabListRenderer<T> {
         int entryX = x + padding + (column * columnWidth);
         int nameX = entryX + HEAD_SIZE + 4;
         PlayerFaceExtractor.extractRenderState(context, skin, entryX, entryY, HEAD_SIZE, true, false, -1);
-        context.text(client.font, client.font.plainSubstrByWidth(name, entryX + columnWidth - nameX - padding), nameX, entryY, CommonColors.WHITE, true);
+        context.text(client.font, Language.getInstance().getVisualOrder(client.font.substrByWidth(label, entryX + columnWidth - nameX - padding)), nameX, entryY, CommonColors.WHITE, true);
     }
 
     abstract Component getHeaderText();

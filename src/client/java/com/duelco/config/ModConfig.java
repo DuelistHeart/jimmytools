@@ -32,6 +32,11 @@ public class ModConfig {
     public static float closeScrollSpeed = 8.0f;
 
     @SerialEntry
+    public static boolean isCustomCharacterScreenEnabled = false;
+    @SerialEntry
+    public static boolean isCharacterRevealEnabled = true;
+
+    @SerialEntry
     public static boolean areTransformationsEnabled = false;
     @SerialEntry
     public static boolean isTransformed = false;
@@ -111,6 +116,27 @@ public class ModConfig {
                         .controller(floatOption -> FloatSliderControllerBuilder.create(floatOption)
                                 .range(1.0f, 12.0f)
                                 .step(1.0f))
+                        .build())
+                .build());
+
+        config.category(ConfigCategory.createBuilder()
+                .name(Component.literal("CharacterSelect"))
+                .tooltip(Component.literal("Character select screen config"))
+                .group(OptionGroup.createBuilder()
+                        .name(Component.literal("Character Select Options"))
+                        .description(OptionDescription.of(Component.literal("Options for the custom /char screen.")))
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Component.literal("Enable Custom Character Select"))
+                                .description(OptionDescription.of(Component.literal("Replaces the /char chest menu with a fighter-roster style screen.")))
+                                .binding(false, () -> isCustomCharacterScreenEnabled, newVal -> isCustomCharacterScreenEnabled = newVal)
+                                .controller(BooleanControllerBuilder::create)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Component.literal("Play Character Reveal"))
+                                .description(OptionDescription.of(Component.literal("Plays a \"JOINS THE BATTLE!\" reveal when you pick a character on the custom screen. When off, the screen just slides away.")))
+                                .binding(true, () -> isCharacterRevealEnabled, newVal -> isCharacterRevealEnabled = newVal)
+                                .controller(BooleanControllerBuilder::create)
+                                .build())
                         .build())
                 .build());
 

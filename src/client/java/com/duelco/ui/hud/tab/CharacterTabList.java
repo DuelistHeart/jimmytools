@@ -29,7 +29,7 @@ public class CharacterTabList extends TabListRenderer<Player> {
 
     @Override
     void executeLoop(Player datum, GuiGraphicsExtractor context, int i) {
-        drawEntry(context, datum.getSkinTexture(), datum.getCharacterName(), i);
+        drawEntry(context, datum.getSkinTexture(), datum.getDisplayLabel(), i);
     }
 
     @Override

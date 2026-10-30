@@ -48,6 +48,7 @@ nav:
       - Bag Hotkeys: features/bag-hotkeys.md
       - Transformations: features/transformations.md
       - Custom Tab List: features/custom-tablist.md
+      - Character Select: features/character-select.md
       - Level-Up Messages: features/level-up-messages.md
       - Startup Commands: features/startup-commands.md
   - Help:

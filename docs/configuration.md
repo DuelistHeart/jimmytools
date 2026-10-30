@@ -19,6 +19,13 @@ Settings are saved when the game closes.
 | Scroll Open Speed | 3 | How fast the scrolls open (1–12). |
 | Scroll Close Speed | 8 | How fast the scrolls close (1–12). |
 
+## CharacterSelect
+
+| Option | Default | Description |
+|---|---|---|
+| Enable Custom Character Select | off | Replaces the `/char` chest menu with the [character select](features/character-select.md) roster. |
+| Play Character Reveal | on | Plays the "JOINS THE BATTLE!" reveal when you pick a character. When off, the screen just slides away. |
+
 ## Transformation
 
 A button starts the [transformation setup](features/transformations.md). The skins it records are stored in the config file.

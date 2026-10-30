@@ -12,6 +12,7 @@ import com.duelco.ui.hud.tab.CharacterTabList;
 import com.duelco.ui.hud.tab.DistrictTabList;
 import com.duelco.ui.hud.tab.PlayerTabList;
 import com.duelco.ui.hud.tab.TabListRenderer;
+import com.duelco.ui.screen.CharacterReveal;
 import com.duelco.ui.screen.ScreenHandler;
 import com.duelco.util.RenderUtils;
 import com.duelco.util.ServerUtils;
@@ -134,6 +135,11 @@ public class JimmyToolsClient implements ClientModInitializer {
 				characterTabList.render(drawContext);
 				districtTabList.render(drawContext);
 			});
+		});
+
+		// Carries the character select reveal on after the server closes the /char menu
+		HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("jimmytools", "character_reveal"), (drawContext, deltaTracker) -> {
+			CharacterReveal.extractHud(drawContext);
 		});
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {

@@ -14,6 +14,7 @@ grown to cover bag hotkeys, a custom tab list and more.
 | [Bag Hotkeys](features/bag-hotkeys.md) | Open your bags with a single key press. |
 | [Transformations](features/transformations.md) | Swap between a character's regular and transformed skin with one key. |
 | [Custom Tab List](features/custom-tablist.md) | A scroll-styled tab list showing players, nearby characters and the current district. |
+| [Character Select](features/character-select.md) | A fighting-game style roster in place of the `/char` menu. |
 | [Level-Up Messages](features/level-up-messages.md) | Level-up notices are also written to chat. |
 | [Startup Commands](features/startup-commands.md) | Run `/names` automatically when you join. |
 

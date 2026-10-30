@@ -16,6 +16,7 @@ bag hotkeys, a custom tab list and more.
 | **Bag Hotkeys** | Open the inventory bags with a single key press (arrow keys by default). |
 | **Transformations** | Swap between a character's regular and transformed skin with one key, for characters like mermaids, magical girls and vampires. |
 | **Custom Tab List** | A scroll-styled tab list showing players, nearby characters and the current district. |
+| **Character Select** | A fighting-game style roster in place of the `/char` menu, with a "JOINS THE BATTLE!" reveal when you pick someone. |
 | **Level-Up Messages** | Level-up notices are also written to chat, so you can read them later. |
 | **Startup Commands** | Run `/names` automatically when you join the server. |
 

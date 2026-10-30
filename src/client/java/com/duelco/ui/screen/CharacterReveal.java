@@ -18,7 +18,8 @@ import java.util.Locale;
 /**
  * The "&lt;NAME&gt; JOINS THE BATTLE!" splash played when a character is picked on the roster. The pick itself reaches
  * the server straight away; this is only a show on top, drawn by the roster screen while it is open and by the HUD
- * once the server closes the menu, so it carries on over the character loading in.
+ * once the server closes the menu, so it carries on over the character loading in. With the reveal turned off, just
+ * its closing slash plays ({@link #startSlash}).
  */
 public final class CharacterReveal {
     // Timeline, in ms after the pick
@@ -31,9 +32,17 @@ public final class CharacterReveal {
     private static final int EXIT_TIME = 420;
     private static final int SKIPPABLE_AFTER = 450;
 
+    // The slash on its own: it sweeps dark over the roster, holds until the server closes the menu, then sweeps off
+    private static final int COVER_TIME = 240;
+    private static final int MIN_HOLD = 80;
+    private static final int GIVE_UP_AT = 1500;  // sweeps off regardless if the menu is still open by now
+
     private static final float WIPE_SKEW = 0.3f;
+    private static final int DARK_TOP = 0xFF141019;
+    private static final int DARK_BOTTOM = 0xFF050508;
     private static final SplashRenderer.Palette FIRE = SplashRenderer.Palette.of(0.06f);
 
+    private static boolean slashOnly;
     private static String name = "";
     private static ResolvableProfile profile;
     private static float hue;
@@ -45,6 +54,7 @@ public final class CharacterReveal {
     }
 
     static void start(String fighterName, ResolvableProfile fighterProfile) {
+        slashOnly = false;
         name = fighterName;
         profile = fighterProfile;
         hue = SplashRenderer.hue(fighterName);
@@ -54,22 +64,32 @@ public final class CharacterReveal {
         play(SoundEvents.FIRECHARGE_USE, 0.7f, 0.5f);
     }
 
+    /** Plays just the closing slash, for a pick with the reveal turned off, so the roster still slides away. */
+    static void startSlash() {
+        slashOnly = true;
+        startedAt = Util.getMillis();
+        exitAt = GIVE_UP_AT;
+    }
+
     static boolean isActive() {
         return startedAt >= 0 && elapsed() < exitAt + EXIT_TIME;
     }
 
     /** Whether the reveal draws its own fighter this frame. Only one skin model can be drawn per frame. */
     static boolean drawsFighter() {
-        if (!isActive() || elapsed() < FLASH_IN) return false;
+        if (slashOnly || !isActive() || elapsed() < FLASH_IN) return false;
         Minecraft minecraft = Minecraft.getInstance();
         int width = minecraft.getWindow().getGuiScaledWidth();
         return wipeEdge(elapsed(), width, minecraft.getWindow().getGuiScaledHeight()) < width;
     }
 
-    /** Jumps to the closing wipe. Ignored just after the pick, so the rest of a double click doesn't skip the show. */
+    /**
+     * Jumps to the closing wipe. Ignored just after the pick, so the rest of a double click doesn't skip the show, and
+     * by the slash on its own, which is waiting on the server rather than putting on a show.
+     */
     static void skip() {
         int elapsed = elapsed();
-        if (isActive() && elapsed >= SKIPPABLE_AFTER && elapsed < exitAt) {
+        if (!slashOnly && isActive() && elapsed >= SKIPPABLE_AFTER && elapsed < exitAt) {
             exitAt = elapsed;
         }
     }
@@ -86,6 +106,10 @@ public final class CharacterReveal {
         int t = elapsed();
         int width = context.guiWidth();
         int height = context.guiHeight();
+        if (slashOnly) {
+            extractSlashOnly(context, width, height, t);
+            return;
+        }
         playCues(t);
 
         if (t < FLASH_IN) {
@@ -100,13 +124,42 @@ public final class CharacterReveal {
 
         // A slanted slash sweeps the splash away left to right. The splash is cut off with a straight scissor edge,
         // so the slash is wide enough to hide that edge all the way down.
-        int lean = (int) (height * WIPE_SKEW);
         int edge = wipeEdge(t, width, height);
         if (edge < width) {
             context.enableScissor(Math.max(edge, 0), 0, width, height);
             extractSplash(context, width, height, t);
             context.disableScissor();
         }
+        slash(context, edge, height);
+    }
+
+    /**
+     * The slash without the splash: it sweeps dark over the roster, then waits for the server to close the menu so
+     * that the sweep off, the same one that clears the reveal, uncovers the world rather than the roster again.
+     */
+    private static void extractSlashOnly(GuiGraphicsExtractor context, int width, int height, int t) {
+        if (t < exitAt && !(Minecraft.getInstance().gui.screen() instanceof CharacterSelectScreen)) {
+            exitAt = Math.max(t, COVER_TIME + MIN_HOLD);
+        }
+
+        if (t < exitAt) {
+            // Fast out of the gate, so the roster is mostly covered before the server can close it
+            int lean = (int) (height * WIPE_SKEW);
+            float cover = SplashRenderer.easeOut(SplashRenderer.progress(t, 0, COVER_TIME));
+            int edge = (int) Mth.lerp(cover, -(lean + 30), width + lean + 24);
+            if (edge > 0) context.fillGradient(0, 0, Math.min(edge, width), height, DARK_TOP, DARK_BOTTOM);
+            slash(context, edge, height);
+            return;
+        }
+
+        int edge = wipeEdge(t, width, height);
+        if (edge < width) context.fillGradient(Math.max(edge, 0), 0, width, height, DARK_TOP, DARK_BOTTOM);
+        slash(context, edge, height);
+    }
+
+    /** The red slash with its gold leading edge, slanted around a straight cut at {@code edge} so it hides it all the way down. */
+    private static void slash(GuiGraphicsExtractor context, int edge, int height) {
+        int lean = (int) (height * WIPE_SKEW);
         SplashRenderer.skewFill(context, edge - lean - 24, 0, edge + 30, height, WIPE_SKEW, 0xFF000000, 0xFF000000);
         SplashRenderer.skewFill(context, edge - lean - 18, 0, edge + 22, height, WIPE_SKEW, SplashRenderer.RED, SplashRenderer.DARK_RED);
         SplashRenderer.skewFill(context, edge + 22, 0, edge + 26, height, WIPE_SKEW, SplashRenderer.GOLD, SplashRenderer.GOLD);

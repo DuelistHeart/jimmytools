@@ -133,7 +133,7 @@ public class ModConfig {
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Component.literal("Play Character Reveal"))
-                                .description(OptionDescription.of(Component.literal("Plays a \"JOINS THE BATTLE!\" reveal when you pick a character on the custom screen.")))
+                                .description(OptionDescription.of(Component.literal("Plays a \"JOINS THE BATTLE!\" reveal when you pick a character on the custom screen. When off, the screen just slides away.")))
                                 .binding(true, () -> isCharacterRevealEnabled, newVal -> isCharacterRevealEnabled = newVal)
                                 .controller(BooleanControllerBuilder::create)
                                 .build())

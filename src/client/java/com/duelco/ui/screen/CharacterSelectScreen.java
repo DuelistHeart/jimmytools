@@ -188,14 +188,20 @@ public class CharacterSelectScreen extends AbstractContainerScreen<ChestMenu> {
 
     // ---- Input ----
 
-    /** Starts the reveal when a fighter is picked, then lets the click through to the server as usual. */
+    /**
+     * Starts the reveal (or with it turned off, just its slash) when a fighter is picked, then lets the click through
+     * to the server as usual.
+     */
     @Override
     protected void slotClicked(Slot slot, int slotId, int buttonNum, ContainerInput containerInput) {
         int index = tiles.indexOf(slot);
-        if (index >= 0 && containerInput == ContainerInput.PICKUP && buttonNum == 0 && ModConfig.isCharacterRevealEnabled) {
+        if (index >= 0 && containerInput == ContainerInput.PICKUP && buttonNum == 0) {
             ItemStack stack = stacks.get(index);
             ResolvableProfile profile = stack.get(DataComponents.PROFILE);
-            if (profile != null) CharacterReveal.start(stack.getHoverName().getString(), profile);
+            if (profile != null) {
+                if (ModConfig.isCharacterRevealEnabled) CharacterReveal.start(stack.getHoverName().getString(), profile);
+                else CharacterReveal.startSlash();
+            }
         }
         // Snapshot the tiles before the client's guess at the click empties one; see layoutRoster
         stacks.replaceAll(ItemStack::copy);
